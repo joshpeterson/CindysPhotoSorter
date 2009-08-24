@@ -38,6 +38,7 @@
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.RemoveAllDestinations = new System.Windows.Forms.Button();
+            this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.StatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -109,7 +110,8 @@
             // StatusStrip
             // 
             this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.StatusStripLabel});
+            this.StatusStripLabel,
+            this.ProgressBar});
             this.StatusStrip.Location = new System.Drawing.Point(0, 469);
             this.StatusStrip.Name = "StatusStrip";
             this.StatusStrip.Size = new System.Drawing.Size(670, 22);
@@ -118,7 +120,9 @@
             // StatusStripLabel
             // 
             this.StatusStripLabel.Name = "StatusStripLabel";
-            this.StatusStripLabel.Size = new System.Drawing.Size(0, 17);
+            this.StatusStripLabel.Size = new System.Drawing.Size(522, 17);
+            this.StatusStripLabel.Spring = true;
+            this.StatusStripLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // RemoveAllDestinations
             // 
@@ -130,6 +134,11 @@
             this.RemoveAllDestinations.Text = "Delete Destinations";
             this.RemoveAllDestinations.UseVisualStyleBackColor = true;
             this.RemoveAllDestinations.Click += new System.EventHandler(this.RemoveAllDestinationsOnClick);
+            // 
+            // ProgressBar
+            // 
+            this.ProgressBar.Name = "ProgressBar";
+            this.ProgressBar.Size = new System.Drawing.Size(100, 16);
             // 
             // PhotoSorter
             // 
@@ -165,6 +174,7 @@
         private System.Windows.Forms.StatusStrip StatusStrip;
         private System.Windows.Forms.ToolStripStatusLabel StatusStripLabel;
         private System.Windows.Forms.Button RemoveAllDestinations;
+        private System.Windows.Forms.ToolStripProgressBar ProgressBar;
     }
 }
 
