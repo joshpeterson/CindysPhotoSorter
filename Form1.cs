@@ -150,19 +150,22 @@ namespace PhotoSorter
             int numImages = imagesInDirectory.Count();
             foreach (string fileName in imagesInDirectory)
             {
-                Bitmap image = new Bitmap(fileName);
-                images.Images.Add(image);
-                ListViewItem item = new ListViewItem(Path.GetFileName(fileName));
-                item.ImageIndex = i;
-                item.Tag = fileName;
-                this.items.Add(item);
-                i++;
-
-                int percentComplete = (int)((float)i / (float)numImages * 100);
-                if (percentComplete > highestPercentageReached)
+                using (Bitmap image = new Bitmap(fileName))
                 {
-                    highestPercentageReached = percentComplete;
-                    this.FindPhotosWorker.ReportProgress(percentComplete);
+                    Image.GetThumbnailImageAbort dummy = null;
+                    images.Images.Add(image.GetThumbnailImage(128, 96, dummy, IntPtr.Zero));
+                    ListViewItem item = new ListViewItem(Path.GetFileName(fileName));
+                    item.ImageIndex = i;
+                    item.Tag = fileName;
+                    this.items.Add(item);
+                    i++;
+
+                    int percentComplete = (int)((float)i / (float)numImages * 100);
+                    if (percentComplete > highestPercentageReached)
+                    {
+                        highestPercentageReached = percentComplete;
+                        this.FindPhotosWorker.ReportProgress(percentComplete);
+                    }
                 }
             }
         }
