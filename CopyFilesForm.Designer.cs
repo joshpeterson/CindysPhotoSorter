@@ -41,8 +41,7 @@
             // 
             // AddDirectory
             // 
-            this.AddDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.AddDirectory.Location = new System.Drawing.Point(10, 12);
+            this.AddDirectory.Location = new System.Drawing.Point(13, 12);
             this.AddDirectory.Name = "AddDirectory";
             this.AddDirectory.Size = new System.Drawing.Size(110, 23);
             this.AddDirectory.TabIndex = 4;
@@ -52,8 +51,7 @@
             // 
             // CopyPhotos
             // 
-            this.CopyPhotos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.CopyPhotos.Location = new System.Drawing.Point(126, 12);
+            this.CopyPhotos.Location = new System.Drawing.Point(136, 12);
             this.CopyPhotos.Name = "CopyPhotos";
             this.CopyPhotos.Size = new System.Drawing.Size(109, 23);
             this.CopyPhotos.TabIndex = 6;
@@ -63,9 +61,8 @@
             // 
             // DeleteCheckbox
             // 
-            this.DeleteCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.DeleteCheckbox.AutoSize = true;
-            this.DeleteCheckbox.Location = new System.Drawing.Point(241, 16);
+            this.DeleteCheckbox.Location = new System.Drawing.Point(251, 16);
             this.DeleteCheckbox.Name = "DeleteCheckbox";
             this.DeleteCheckbox.Size = new System.Drawing.Size(118, 17);
             this.DeleteCheckbox.TabIndex = 7;
@@ -74,13 +71,12 @@
             // 
             // DestinationDirectoriesPanel
             // 
-            this.DestinationDirectoriesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.DestinationDirectoriesPanel.AutoScroll = true;
             this.DestinationDirectoriesPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(5, 58);
+            this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(15, 58);
             this.DestinationDirectoriesPanel.Name = "DestinationDirectoriesPanel";
             this.DestinationDirectoriesPanel.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(598, 111);
+            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(473, 111);
             this.DestinationDirectoriesPanel.TabIndex = 8;
             // 
             // StatusStrip
@@ -90,14 +86,14 @@
             this.ProgressBar});
             this.StatusStrip.Location = new System.Drawing.Point(0, 174);
             this.StatusStrip.Name = "StatusStrip";
-            this.StatusStrip.Size = new System.Drawing.Size(615, 22);
+            this.StatusStrip.Size = new System.Drawing.Size(500, 22);
             this.StatusStrip.TabIndex = 9;
             this.StatusStrip.Text = "statusStrip1";
             // 
             // StatusStripLabel
             // 
             this.StatusStripLabel.Name = "StatusStripLabel";
-            this.StatusStripLabel.Size = new System.Drawing.Size(498, 17);
+            this.StatusStripLabel.Size = new System.Drawing.Size(496, 17);
             this.StatusStripLabel.Spring = true;
             this.StatusStripLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -119,7 +115,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 196);
+            this.ClientSize = new System.Drawing.Size(500, 196);
             this.Controls.Add(this.DestinationHeaderLabel);
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.DestinationDirectoriesPanel);

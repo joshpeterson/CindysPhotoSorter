@@ -132,7 +132,7 @@ namespace PhotoSorter
         private void UpdateProgress(object sender, ProgressChangedEventArgs e)
         {
             this.ProgressBar.Value = e.ProgressPercentage;
-            this.StatusStripLabel.Text = string.Format("Processing photo {0}", Path.GetFullPath((string)e.UserState));
+            this.StatusStripLabel.Text = string.Format("Processed photo {0}", Path.GetFullPath((string)e.UserState));
         }
 
         private void ClearProgressBar(object sender, RunWorkerCompletedEventArgs e)
