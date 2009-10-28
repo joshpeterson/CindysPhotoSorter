@@ -18,6 +18,7 @@ namespace PhotoSorter
             InitializeComponent();
 
             this.items = new List<ListViewItem>();
+            this.photosDeletedDuringCopy = new List<string>();
             
             this.FindPhotosWorker = new BackgroundWorker();
             this.FindPhotosWorker.WorkerReportsProgress = true;
@@ -27,6 +28,11 @@ namespace PhotoSorter
             this.FindPhotosWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateProgress);
 
             this.StatusStripLabel.Text = "Click Find Photos to select current photo location.";
+        }
+
+        public void OnPhotoDeleted(string fileName)
+        {
+            this.photosDeletedDuringCopy.Add(fileName);
         }
 
         private void SourceDirectoryOnClick(object sender, EventArgs e)
@@ -49,8 +55,35 @@ namespace PhotoSorter
 
         private void CopyPhotosOnClick(object sender, EventArgs e)
         {
+            if (this.PhotoDisplay.SelectedItems.Count == 0)
+            {
+                this.StatusStripLabel.Text = "Please select at least one photo to copy.";
+                return;
+            }
+
             CopyFilesForm copyFiles = new CopyFilesForm(this.PhotoDisplay.SelectedItems);
+            copyFiles.PhotoDeleted += this.OnPhotoDeleted;
             copyFiles.ShowDialog();
+            copyFiles.PhotoDeleted -= this.OnPhotoDeleted;
+
+            RemoveDeletedPhotos();
+
+            this.StatusStripLabel.Text = "Photos copied successfully.";
+        }
+
+        private void RemoveDeletedPhotos()
+        {
+            foreach (string fileName in this.photosDeletedDuringCopy)
+            {
+                foreach (ListViewItem item in this.PhotoDisplay.Items)
+                {
+                    if ((string)item.Tag == fileName)
+                    {
+                        this.PhotoDisplay.Items.Remove(item);
+                    }
+                }
+            }
+            this.photosDeletedDuringCopy.Clear();
         }
 
         private void GetImagesInDirectory(object sender, DoWorkEventArgs e)
@@ -79,7 +112,7 @@ namespace PhotoSorter
                     if (percentComplete > highestPercentageReached)
                     {
                         highestPercentageReached = percentComplete;
-                        this.FindPhotosWorker.ReportProgress(percentComplete);
+                        this.FindPhotosWorker.ReportProgress(percentComplete, fileName);
                     }
                 }
             }
@@ -93,12 +126,13 @@ namespace PhotoSorter
                 this.PhotoDisplay.Items.Add(item);
             }
 
-            this.StatusStripLabel.Text = "Click Add Destination to select photo destinations.";
+            this.StatusStripLabel.Text = "Select photos to copy.";
         }
 
         private void UpdateProgress(object sender, ProgressChangedEventArgs e)
         {
             this.ProgressBar.Value = e.ProgressPercentage;
+            this.StatusStripLabel.Text = string.Format("Processing photo {0}", Path.GetFullPath((string)e.UserState));
         }
 
         private void ClearProgressBar(object sender, RunWorkerCompletedEventArgs e)
@@ -128,5 +162,6 @@ namespace PhotoSorter
         private ImageList images;
         private List<ListViewItem> items;
         private BackgroundWorker FindPhotosWorker;
+        private List<string> photosDeletedDuringCopy;
     }
 }

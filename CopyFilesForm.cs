@@ -27,6 +27,10 @@ namespace PhotoSorter
             this.CopyPhotosWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateProgress);
         }
 
+        public delegate void PhotoDeletedEventHandler(string fileName);
+
+        public event PhotoDeletedEventHandler PhotoDeleted; 
+
         private void AddDirectoryOnClick(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
@@ -45,6 +49,21 @@ namespace PhotoSorter
 
         private void CopyPhotosOnClick(object sender, EventArgs e)
         {
+            if (this.destinationDirectories.Count == 0)
+            {
+                this.StatusStripLabel.Text = "Please add at least one destination directory.";
+                return;
+            }
+
+            foreach (DestinationDirectoryInformation destinationDirectory in this.destinationDirectories)
+            {
+                if (destinationDirectory.FileNamePrefix == DestinationDirectoryInformation.DefaultFileNamePrefix)
+                {
+                    this.StatusStripLabel.Text = "Please select a file name prefix for all destinations.";
+                    return;
+                }
+            }
+
             int numPhotos = this.selectedItems.Count;
             if (numPhotos > 0)
             {
@@ -52,7 +71,6 @@ namespace PhotoSorter
                 foreach (ListViewItem photo in this.selectedItems)
                 {
                     photoFileNames.Add(photo.Tag.ToString());
-
                 }
 
                 CopyPhotoInformation copyInformation = new CopyPhotoInformation();
@@ -64,15 +82,13 @@ namespace PhotoSorter
 
                 this.StatusStripLabel.Text = "Copying photos...";
             }
-            else
-            {
-                this.StatusStripLabel.Text = "Select photos to copy.";
-            }
         }
 
         private void CopyImages(object sender, DoWorkEventArgs e)
         {
+            int highestPercentageReached = 0;
             int fileNameCounter = 1;
+            int i = 0;
             CopyPhotoInformation copyInformation = (CopyPhotoInformation)e.Argument;
             foreach (string fileName in copyInformation.PhotoFileNames)
             {
@@ -91,9 +107,18 @@ namespace PhotoSorter
                 if (copyInformation.DeleteSourcePhotoAfterCopy)
                 {
                     File.Delete(fileName);
+                    this.PhotoDeleted(fileName);
+                }
+
+                int percentComplete = (int)((float)i / (float)copyInformation.NumberOfPhotos * 100);
+                if (percentComplete > highestPercentageReached)
+                {
+                    highestPercentageReached = percentComplete;
+                    this.CopyPhotosWorker.ReportProgress(percentComplete);
                 }
 
                 fileNameCounter++;
+                i++;
             }
         }
 
@@ -130,16 +155,16 @@ namespace PhotoSorter
             public DestinationDirectoryInformation(string destinationDirectoryName)
             {
                 this.destinationDirectoryName = Path.GetFullPath(destinationDirectoryName);
+
                 this.destinationDirectoryDisplay = new Label();
                 this.destinationDirectoryDisplay.Height = 1;
                 this.destinationDirectoryDisplay.AutoSize = true;
                 this.destinationDirectoryDisplay.Text = this.destinationDirectoryName;
-
-                ToolTip fullDirectoryName = new ToolTip();
-                fullDirectoryName.SetToolTip(this.destinationDirectoryDisplay, string.Format("Destination directory: {0}", this.destinationDirectoryName));
+                this.destinationDirectoryDisplay.Padding = new Padding(0, 7, 0, 0);
 
                 this.fileNamePrefix = new TextBox();
-                this.fileNamePrefix.Text = "File name prefix";
+                this.fileNamePrefix.Text = DestinationDirectoryInformation.DefaultFileNamePrefix;
+
                 this.fileNamePrefix.Click += new EventHandler(this.FileNamePrefixOnClick);
             }
 
@@ -148,8 +173,9 @@ namespace PhotoSorter
                 FlowLayoutPanel directoryPanel = new FlowLayoutPanel();
                 directoryPanel.Height = 1;
                 directoryPanel.AutoSize = true;
-                directoryPanel.Controls.Add(this.fileNamePrefix);
+
                 directoryPanel.Controls.Add(this.destinationDirectoryDisplay);
+                directoryPanel.Controls.Add(this.fileNamePrefix);
 
                 parent.Controls.Add(directoryPanel);
             }
@@ -169,6 +195,8 @@ namespace PhotoSorter
                     return this.destinationDirectoryName;
                 }
             }
+
+            public const string DefaultFileNamePrefix = "File name prefix";
 
             private void FileNamePrefixOnClick(object sender, EventArgs e)
             {

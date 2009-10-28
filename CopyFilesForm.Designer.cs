@@ -35,13 +35,14 @@
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.DestinationHeaderLabel = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // AddDirectory
             // 
             this.AddDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.AddDirectory.Location = new System.Drawing.Point(17, 12);
+            this.AddDirectory.Location = new System.Drawing.Point(10, 12);
             this.AddDirectory.Name = "AddDirectory";
             this.AddDirectory.Size = new System.Drawing.Size(110, 23);
             this.AddDirectory.TabIndex = 4;
@@ -52,7 +53,7 @@
             // CopyPhotos
             // 
             this.CopyPhotos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.CopyPhotos.Location = new System.Drawing.Point(133, 12);
+            this.CopyPhotos.Location = new System.Drawing.Point(126, 12);
             this.CopyPhotos.Name = "CopyPhotos";
             this.CopyPhotos.Size = new System.Drawing.Size(109, 23);
             this.CopyPhotos.TabIndex = 6;
@@ -64,7 +65,7 @@
             // 
             this.DeleteCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.DeleteCheckbox.AutoSize = true;
-            this.DeleteCheckbox.Location = new System.Drawing.Point(248, 16);
+            this.DeleteCheckbox.Location = new System.Drawing.Point(241, 16);
             this.DeleteCheckbox.Name = "DeleteCheckbox";
             this.DeleteCheckbox.Size = new System.Drawing.Size(118, 17);
             this.DeleteCheckbox.TabIndex = 7;
@@ -75,11 +76,11 @@
             // 
             this.DestinationDirectoriesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.DestinationDirectoriesPanel.AutoScroll = true;
-            this.DestinationDirectoriesPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(12, 41);
+            this.DestinationDirectoriesPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(5, 58);
             this.DestinationDirectoriesPanel.Name = "DestinationDirectoriesPanel";
             this.DestinationDirectoriesPanel.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(598, 338);
+            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(598, 111);
             this.DestinationDirectoriesPanel.TabIndex = 8;
             // 
             // StatusStrip
@@ -87,16 +88,16 @@
             this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusStripLabel,
             this.ProgressBar});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 382);
+            this.StatusStrip.Location = new System.Drawing.Point(0, 174);
             this.StatusStrip.Name = "StatusStrip";
-            this.StatusStrip.Size = new System.Drawing.Size(622, 22);
+            this.StatusStrip.Size = new System.Drawing.Size(615, 22);
             this.StatusStrip.TabIndex = 9;
             this.StatusStrip.Text = "statusStrip1";
             // 
             // StatusStripLabel
             // 
             this.StatusStripLabel.Name = "StatusStripLabel";
-            this.StatusStripLabel.Size = new System.Drawing.Size(474, 17);
+            this.StatusStripLabel.Size = new System.Drawing.Size(498, 17);
             this.StatusStripLabel.Spring = true;
             this.StatusStripLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -105,18 +106,28 @@
             this.ProgressBar.Name = "ProgressBar";
             this.ProgressBar.Size = new System.Drawing.Size(100, 16);
             // 
+            // DestinationHeaderLabel
+            // 
+            this.DestinationHeaderLabel.AutoSize = true;
+            this.DestinationHeaderLabel.Location = new System.Drawing.Point(12, 38);
+            this.DestinationHeaderLabel.Name = "DestinationHeaderLabel";
+            this.DestinationHeaderLabel.Size = new System.Drawing.Size(68, 13);
+            this.DestinationHeaderLabel.TabIndex = 0;
+            this.DestinationHeaderLabel.Text = "Destinations:";
+            // 
             // CopyFilesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(622, 404);
+            this.ClientSize = new System.Drawing.Size(615, 196);
+            this.Controls.Add(this.DestinationHeaderLabel);
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.DestinationDirectoriesPanel);
             this.Controls.Add(this.DeleteCheckbox);
             this.Controls.Add(this.CopyPhotos);
             this.Controls.Add(this.AddDirectory);
             this.Name = "CopyFilesForm";
-            this.Text = "CopyFilesForm";
+            this.Text = "Copy Photos";
             this.StatusStrip.ResumeLayout(false);
             this.StatusStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -133,5 +144,6 @@
         private System.Windows.Forms.StatusStrip StatusStrip;
         private System.Windows.Forms.ToolStripStatusLabel StatusStripLabel;
         private System.Windows.Forms.ToolStripProgressBar ProgressBar;
+        private System.Windows.Forms.Label DestinationHeaderLabel;
     }
 }
