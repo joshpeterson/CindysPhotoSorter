@@ -140,6 +140,11 @@ namespace PhotoSorter
 
         private string GetFileNameNumber(int fileNameCounter, int numPhotos)
         {
+            if (fileNameCounter < 100)
+            {
+                return fileNameCounter.ToString().PadLeft(3, '0');
+            }
+
             return fileNameCounter.ToString();
         }
 
