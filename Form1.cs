@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Collections;
 using System.IO;
+using System.Drawing.Imaging;
 
 namespace PhotoSorter
 {
@@ -104,7 +105,7 @@ namespace PhotoSorter
                 {
                     Image.GetThumbnailImageAbort dummy = null;
                     images.Images.Add(image.GetThumbnailImage(128, 96, dummy, IntPtr.Zero));
-                    ListViewItem item = new ListViewItem(Path.GetFileName(fileName));
+                    ListViewItem item = new ListViewItem(string.Format("{0}\n{1}", Path.GetFileName(fileName), this.GetImageDateTaken(image)));
                     item.ImageIndex = i;
                     item.Tag = fileName;
                     this.items.Add(item);
@@ -159,6 +160,19 @@ namespace PhotoSorter
         {
             string extension = Path.GetExtension(fileName).ToLower();
             return extension == ".jpg" || extension == ".png";
+        }
+
+        private DateTime GetImageDateTaken(Image image)
+        {
+            PropertyItem propertyItem = image.GetPropertyItem(306);
+
+            string dateTaken = Encoding.UTF8.GetString(propertyItem.Value).Trim();
+            string secondHalf = dateTaken.Substring(dateTaken.IndexOf(" "), (dateTaken.Length - dateTaken.IndexOf(" ")));
+            string firstHalf = dateTaken.Substring(0, 10);
+            firstHalf = firstHalf.Replace(":", "-");
+            dateTaken = firstHalf + secondHalf;
+
+            return DateTime.Parse(dateTaken);
         }
 
         private ImageList images;
