@@ -76,7 +76,7 @@
             this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(15, 58);
             this.DestinationDirectoriesPanel.Name = "DestinationDirectoriesPanel";
             this.DestinationDirectoriesPanel.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(473, 111);
+            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(516, 128);
             this.DestinationDirectoriesPanel.TabIndex = 8;
             // 
             // StatusStrip
@@ -84,16 +84,16 @@
             this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusStripLabel,
             this.ProgressBar});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 174);
+            this.StatusStrip.Location = new System.Drawing.Point(0, 198);
             this.StatusStrip.Name = "StatusStrip";
-            this.StatusStrip.Size = new System.Drawing.Size(500, 22);
+            this.StatusStrip.Size = new System.Drawing.Size(543, 22);
             this.StatusStrip.TabIndex = 9;
             this.StatusStrip.Text = "statusStrip1";
             // 
             // StatusStripLabel
             // 
             this.StatusStripLabel.Name = "StatusStripLabel";
-            this.StatusStripLabel.Size = new System.Drawing.Size(496, 17);
+            this.StatusStripLabel.Size = new System.Drawing.Size(426, 17);
             this.StatusStripLabel.Spring = true;
             this.StatusStripLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -115,7 +115,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(500, 196);
+            this.ClientSize = new System.Drawing.Size(543, 220);
             this.Controls.Add(this.DestinationHeaderLabel);
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.DestinationDirectoriesPanel);
