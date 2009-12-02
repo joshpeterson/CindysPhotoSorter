@@ -62,9 +62,11 @@ namespace PhotoSorter
                 return;
             }
 
+            this.PhotoDisplay.Select();
+
             CopyFilesForm copyFiles = new CopyFilesForm(this.PhotoDisplay.SelectedItems);
             copyFiles.PhotoDeleted += this.OnPhotoDeleted;
-            copyFiles.ShowDialog();
+            copyFiles.Show();
             copyFiles.PhotoDeleted -= this.OnPhotoDeleted;
 
             RemoveDeletedPhotos();
