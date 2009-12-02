@@ -68,6 +68,8 @@ namespace PhotoSorter
 
             RemoveDeletedPhotos();
 
+            this.PhotoDisplay.Sort();
+
             this.StatusStripLabel.Text = "Photos copied successfully.";
         }
 
