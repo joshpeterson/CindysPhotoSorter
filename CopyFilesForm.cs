@@ -29,7 +29,7 @@ namespace PhotoSorter
 
         public delegate void PhotoDeletedEventHandler(string fileName);
 
-        public event PhotoDeletedEventHandler PhotoDeleted; 
+        public event PhotoDeletedEventHandler PhotoDeleted;
 
         private void AddDirectoryOnClick(object sender, EventArgs e)
         {

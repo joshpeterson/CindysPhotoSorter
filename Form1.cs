@@ -26,6 +26,7 @@ namespace PhotoSorter
             this.FindPhotosWorker.DoWork += new DoWorkEventHandler(this.GetImagesInDirectory);
             this.FindPhotosWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.SetUpListView);
             this.FindPhotosWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.ClearProgressBar);
+            this.FindPhotosWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.SortPhotoDisplay);
             this.FindPhotosWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateProgress);
 
             this.StatusStripLabel.Text = "Click Find Photos to select current photo location.";
@@ -66,7 +67,7 @@ namespace PhotoSorter
 
             CopyFilesForm copyFiles = new CopyFilesForm(this.PhotoDisplay.SelectedItems);
             copyFiles.PhotoDeleted += this.OnPhotoDeleted;
-            copyFiles.Show();
+            copyFiles.ShowDialog();
             copyFiles.PhotoDeleted -= this.OnPhotoDeleted;
 
             RemoveDeletedPhotos();
@@ -143,6 +144,11 @@ namespace PhotoSorter
         private void ClearProgressBar(object sender, RunWorkerCompletedEventArgs e)
         {
             this.ProgressBar.Value = 0;
+        }
+
+        private void SortPhotoDisplay(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.PhotoDisplay.Sort();
         }
         
         private IEnumerable<string> GetImageFilesInDirectory(string directoryName)

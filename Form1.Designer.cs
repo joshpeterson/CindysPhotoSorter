@@ -46,6 +46,7 @@
             this.PhotoDisplay.Location = new System.Drawing.Point(12, 40);
             this.PhotoDisplay.Name = "PhotoDisplay";
             this.PhotoDisplay.Size = new System.Drawing.Size(646, 426);
+            this.PhotoDisplay.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.PhotoDisplay.TabIndex = 0;
             this.PhotoDisplay.UseCompatibleStateImageBehavior = false;
             // 
