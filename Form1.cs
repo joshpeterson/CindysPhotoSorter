@@ -104,11 +104,12 @@ namespace PhotoSorter
             int numImages = imagesInDirectory.Count();
             foreach (string fileName in imagesInDirectory)
             {
-                using (Bitmap image = new Bitmap(fileName))
-                {
-                    Image.GetThumbnailImageAbort dummy = null;
-                    images.Images.Add(image.GetThumbnailImage(128, 96, dummy, IntPtr.Zero));
-                    ListViewItem item = new ListViewItem(string.Format("{0}\n{1}", Path.GetFileName(fileName), this.GetImageDateTaken(image)));
+                //using (Bitmap image = new Bitmap(fileName))
+                //{
+                    //Image.GetThumbnailImageAbort dummy = null;
+                    ImageData imageData = this.GetImageData(fileName);
+                    images.Images.Add(imageData.Thumbnail);
+                    ListViewItem item = new ListViewItem(string.Format("{0}\n{1}", Path.GetFileName(fileName), imageData.DateTaken != DateTime.MinValue ? imageData.DateTaken.ToString() : string.Empty));
                     item.ImageIndex = i;
                     item.Tag = fileName;
                     this.items.Add(item);
@@ -120,7 +121,77 @@ namespace PhotoSorter
                         highestPercentageReached = percentComplete;
                         this.FindPhotosWorker.ReportProgress(percentComplete, fileName);
                     }
+                //}
+            }
+        }
+
+        private struct ImageData
+        {
+            public Image Thumbnail;
+            public DateTime DateTaken;
+        }
+
+        private ImageData GetImageData(string path)
+        {
+	        FileStream fs = File.OpenRead (path);
+	        // Last parameter tells GDI+ not the load the actual image data
+            using (Image img = Image.FromStream(fs, false, false))
+            {
+                // GDI+ throws an error if we try to read a property when the image
+                // doesn't have that property. Check to make sure the thumbnail property
+                // item exists.
+                bool thumbnailPropertyFound = false;
+                bool dateTakenPropertyFound = false;
+                for (int i = 0; i < img.PropertyIdList.Length; i++)
+                {
+                    if (img.PropertyIdList[i] == 0x501B)
+                    {
+                        thumbnailPropertyFound = true;
+                        if (dateTakenPropertyFound == true)
+                        {
+                            break;
+                        }
+                    }
+                    if (img.PropertyIdList[i] == 306)
+                    {
+                        dateTakenPropertyFound = true;
+                        if (thumbnailPropertyFound == true)
+                        {
+                            break;
+                        }
+                    }
                 }
+
+                if (!thumbnailPropertyFound)
+                {
+                    // Do slow image thumbnail here
+                    throw new Exception("problem");
+                }
+
+                PropertyItem p = img.GetPropertyItem(0x501B);
+
+                // The image data is in the form of a byte array. Write all 
+                // the bytes to a stream and create a new image from that stream
+                byte[] imageBytes = p.Value;
+                MemoryStream stream = new MemoryStream(imageBytes.Length);
+                stream.Write(imageBytes, 0, imageBytes.Length);
+
+                ImageData imageData;
+
+                imageData.Thumbnail = Image.FromStream(stream);
+
+                if (dateTakenPropertyFound)
+                {
+                    imageData.DateTaken = this.GetImageDateTaken(img);
+                }
+                else
+                {
+                    imageData.DateTaken = DateTime.MinValue;
+                }
+
+                fs.Close();
+
+                return imageData;
             }
         }
 
@@ -172,15 +243,22 @@ namespace PhotoSorter
 
         private DateTime GetImageDateTaken(Image image)
         {
-            PropertyItem propertyItem = image.GetPropertyItem(306);
+            try
+            {
+                PropertyItem propertyItem = image.GetPropertyItem(306);
 
-            string dateTaken = Encoding.UTF8.GetString(propertyItem.Value).Trim();
-            string secondHalf = dateTaken.Substring(dateTaken.IndexOf(" "), (dateTaken.Length - dateTaken.IndexOf(" ")));
-            string firstHalf = dateTaken.Substring(0, 10);
-            firstHalf = firstHalf.Replace(":", "-");
-            dateTaken = firstHalf + secondHalf;
+                string dateTaken = Encoding.UTF8.GetString(propertyItem.Value).Trim();
+                string secondHalf = dateTaken.Substring(dateTaken.IndexOf(" "), (dateTaken.Length - dateTaken.IndexOf(" ")));
+                string firstHalf = dateTaken.Substring(0, 10);
+                firstHalf = firstHalf.Replace(":", "-");
+                dateTaken = firstHalf + secondHalf;
 
-            return DateTime.Parse(dateTaken);
+                return DateTime.Parse(dateTaken);
+            }
+            catch (ArgumentException)
+            {
+                return DateTime.Today;
+            }
         }
 
         private ImageList images;
