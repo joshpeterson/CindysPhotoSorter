@@ -34,6 +34,7 @@ namespace PhotoSorter
         private void AddDirectoryOnClick(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
+            folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
             folderBrowser.ShowDialog();
 

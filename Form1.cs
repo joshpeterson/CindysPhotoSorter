@@ -40,7 +40,7 @@ namespace PhotoSorter
         private void SourceDirectoryOnClick(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
-            folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
 
             DialogResult result = folderBrowser.ShowDialog();
 
@@ -76,6 +76,11 @@ namespace PhotoSorter
             this.PhotoDisplay.Sort();
 
             this.StatusStripLabel.Text = "Photos copied successfully.";
+        }
+
+        private void OnSelectionedIndexChanged(object sender, EventArgs e)
+        {
+            this.StatusStripLabel.Text = string.Format("{0} of {1} photos selected.", this.PhotoDisplay.SelectedItems.Count, this.PhotoDisplay.Items.Count);
         }
 
         private void RemoveDeletedPhotos()

@@ -49,6 +49,7 @@
             this.PhotoDisplay.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.PhotoDisplay.TabIndex = 0;
             this.PhotoDisplay.UseCompatibleStateImageBehavior = false;
+            this.PhotoDisplay.SelectedIndexChanged += new System.EventHandler(this.OnSelectionedIndexChanged);
             // 
             // SourceDirectory
             // 
