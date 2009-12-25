@@ -133,65 +133,57 @@ namespace PhotoSorter
 
         private ImageData GetImageData(string path)
         {
-	        FileStream fs = File.OpenRead (path);
-	        // Last parameter tells GDI+ not the load the actual image data
-            using (Image img = Image.FromStream(fs, false, false))
+	        using (FileStream fs = File.OpenRead (path))
             {
-                // GDI+ throws an error if we try to read a property when the image
-                // doesn't have that property. Check to make sure the thumbnail property
-                // item exists.
-                bool thumbnailPropertyFound = false;
-                bool dateTakenPropertyFound = false;
-                for (int i = 0; i < img.PropertyIdList.Length; i++)
+	        // Last parameter tells GDI+ not the load the actual image data
+                using (Image img = Image.FromStream(fs, false, false))
                 {
-                    if (img.PropertyIdList[i] == 0x501B)
+                    // GDI+ throws an error if we try to read a property when the image
+                    // doesn't have that property. Check to make sure the thumbnail property
+                    // item exists.
+                    bool thumbnailPropertyFound = false;
+                    bool dateTakenPropertyFound = false;
+                    for (int i = 0; i < img.PropertyIdList.Length; i++)
                     {
-                        thumbnailPropertyFound = true;
-                        if (dateTakenPropertyFound == true)
+                        if (img.PropertyIdList[i] == 0x501B)
                         {
-                            break;
+                            thumbnailPropertyFound = true;
+                            if (dateTakenPropertyFound == true)
+                            {
+                                break;
+                            }
+                        }
+                        if (img.PropertyIdList[i] == 306)
+                        {
+                            dateTakenPropertyFound = true;
+                            if (thumbnailPropertyFound == true)
+                            {
+                                break;
+                            }
                         }
                     }
-                    if (img.PropertyIdList[i] == 306)
+
+                    if (!thumbnailPropertyFound)
                     {
-                        dateTakenPropertyFound = true;
-                        if (thumbnailPropertyFound == true)
-                        {
-                            break;
-                        }
+                        // Do slow image thumbnail here
+                        throw new Exception("problem");
                     }
-                }
 
-                if (!thumbnailPropertyFound)
-                {
-                    // Do slow image thumbnail here
-                    throw new Exception("problem");
-                }
+                    PropertyItem p = img.GetPropertyItem(0x501B);
 
-                PropertyItem p = img.GetPropertyItem(0x501B);
+                    // The image data is in the form of a byte array. Write all 
+                    // the bytes to a stream and create a new image from that stream
+                    byte[] imageBytes = p.Value;
+                    MemoryStream stream = new MemoryStream(imageBytes.Length);
+                    stream.Write(imageBytes, 0, imageBytes.Length);
 
-                // The image data is in the form of a byte array. Write all 
-                // the bytes to a stream and create a new image from that stream
-                byte[] imageBytes = p.Value;
-                MemoryStream stream = new MemoryStream(imageBytes.Length);
-                stream.Write(imageBytes, 0, imageBytes.Length);
+                    ImageData imageData;
 
-                ImageData imageData;
-
-                imageData.Thumbnail = Image.FromStream(stream);
-
-                if (dateTakenPropertyFound)
-                {
+                    imageData.Thumbnail = Image.FromStream(stream);
                     imageData.DateTaken = this.GetImageDateTaken(img);
-                }
-                else
-                {
-                    imageData.DateTaken = DateTime.MinValue;
-                }
 
-                fs.Close();
-
-                return imageData;
+                    return imageData;
+                }
             }
         }
 
@@ -241,6 +233,27 @@ namespace PhotoSorter
             return extension == ".jpg" || extension == ".png";
         }
 
+        private Image GetImageThumbnail(Image image, string fileName)
+        {
+            try
+            {
+                PropertyItem propertyItem = image.GetPropertyItem(0x501B);
+
+                byte[] imageBytes = propertyItem.Value;
+                MemoryStream stream = new MemoryStream(imageBytes.Length);
+                stream.Write(imageBytes, 0, imageBytes.Length);
+
+                return Image.FromStream(stream);
+            }
+            catch (ArgumentException)
+            {
+                using (Bitmap fullImage = new Bitmap(fileName))
+                {
+                    Image.GetThumbnailImageAbort dummy = null;
+                }
+            }
+        }
+
         private DateTime GetImageDateTaken(Image image)
         {
             try
@@ -257,7 +270,7 @@ namespace PhotoSorter
             }
             catch (ArgumentException)
             {
-                return DateTime.Today;
+                return DateTime.MinValue;
             }
         }
 
