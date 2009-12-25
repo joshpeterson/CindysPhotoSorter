@@ -40,10 +40,11 @@ namespace PhotoSorter
         private void SourceDirectoryOnClick(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
+            folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
-            folderBrowser.ShowDialog();
+            DialogResult result = folderBrowser.ShowDialog();
 
-            if (!string.IsNullOrEmpty(folderBrowser.SelectedPath))
+            if (result == DialogResult.OK)
             {
                 this.images = new ImageList();
                 this.items.Clear();
@@ -151,7 +152,18 @@ namespace PhotoSorter
                 this.PhotoDisplay.Items.Add(item);
             }
 
-            this.StatusStripLabel.Text = "Select photos to copy.";
+            if (this.PhotoDisplay.Items.Count == 0)
+            {
+                this.StatusStripLabel.Text = "No photos found";
+            }
+            else if (this.PhotoDisplay.Items.Count == 1)
+            {
+                this.StatusStripLabel.Text = string.Format("{0} photo found.", this.PhotoDisplay.Items.Count);
+            }
+            else
+            {
+                this.StatusStripLabel.Text = string.Format("{0} photos found.  Select photos to copy.", this.PhotoDisplay.Items.Count);
+            }
         }
 
         private void UpdateProgress(object sender, ProgressChangedEventArgs e)
