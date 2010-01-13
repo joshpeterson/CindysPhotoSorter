@@ -28,9 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.AddDirectory = new System.Windows.Forms.Button();
             this.CopyPhotos = new System.Windows.Forms.Button();
-            this.DeleteCheckbox = new System.Windows.Forms.CheckBox();
             this.DestinationDirectoriesPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -38,16 +36,6 @@
             this.DestinationHeaderLabel = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // AddDirectory
-            // 
-            this.AddDirectory.Location = new System.Drawing.Point(13, 12);
-            this.AddDirectory.Name = "AddDirectory";
-            this.AddDirectory.Size = new System.Drawing.Size(110, 23);
-            this.AddDirectory.TabIndex = 4;
-            this.AddDirectory.Text = "Add Destination";
-            this.AddDirectory.UseVisualStyleBackColor = true;
-            this.AddDirectory.Click += new System.EventHandler(this.AddDirectoryOnClick);
             // 
             // CopyPhotos
             // 
@@ -58,16 +46,6 @@
             this.CopyPhotos.Text = "Copy Photos";
             this.CopyPhotos.UseVisualStyleBackColor = true;
             this.CopyPhotos.Click += new System.EventHandler(this.CopyPhotosOnClick);
-            // 
-            // DeleteCheckbox
-            // 
-            this.DeleteCheckbox.AutoSize = true;
-            this.DeleteCheckbox.Location = new System.Drawing.Point(251, 16);
-            this.DeleteCheckbox.Name = "DeleteCheckbox";
-            this.DeleteCheckbox.Size = new System.Drawing.Size(118, 17);
-            this.DeleteCheckbox.TabIndex = 7;
-            this.DeleteCheckbox.Text = "Remove After Copy";
-            this.DeleteCheckbox.UseVisualStyleBackColor = true;
             // 
             // DestinationDirectoriesPanel
             // 
@@ -119,9 +97,7 @@
             this.Controls.Add(this.DestinationHeaderLabel);
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.DestinationDirectoriesPanel);
-            this.Controls.Add(this.DeleteCheckbox);
             this.Controls.Add(this.CopyPhotos);
-            this.Controls.Add(this.AddDirectory);
             this.Name = "CopyFilesForm";
             this.Text = "Copy Photos";
             this.StatusStrip.ResumeLayout(false);
@@ -133,9 +109,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button AddDirectory;
         private System.Windows.Forms.Button CopyPhotos;
-        private System.Windows.Forms.CheckBox DeleteCheckbox;
         private System.Windows.Forms.FlowLayoutPanel DestinationDirectoriesPanel;
         private System.Windows.Forms.StatusStrip StatusStrip;
         private System.Windows.Forms.ToolStripStatusLabel StatusStripLabel;
