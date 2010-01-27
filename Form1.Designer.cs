@@ -36,9 +36,8 @@
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.AddDestination = new System.Windows.Forms.Button();
-            this.RemoveAfterCopy = new System.Windows.Forms.CheckBox();
-            this.DestinationDirectoryLabel = new System.Windows.Forms.Label();
-            this.FilenamePrefixTextBox = new System.Windows.Forms.TextBox();
+            this.DeleteCheckbox = new System.Windows.Forms.CheckBox();
+            this.DestinationDirectoriesPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.StatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,7 +59,7 @@
             this.SourceDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SourceDirectory.Location = new System.Drawing.Point(12, 11);
             this.SourceDirectory.Name = "SourceDirectory";
-            this.SourceDirectory.Size = new System.Drawing.Size(110, 23);
+            this.SourceDirectory.Size = new System.Drawing.Size(78, 23);
             this.SourceDirectory.TabIndex = 1;
             this.SourceDirectory.Text = "Find Photos";
             this.SourceDirectory.UseVisualStyleBackColor = true;
@@ -71,7 +70,7 @@
             this.CopyPhotos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CopyPhotos.Location = new System.Drawing.Point(12, 444);
             this.CopyPhotos.Name = "CopyPhotos";
-            this.CopyPhotos.Size = new System.Drawing.Size(109, 23);
+            this.CopyPhotos.Size = new System.Drawing.Size(78, 23);
             this.CopyPhotos.TabIndex = 5;
             this.CopyPhotos.Text = "Copy Photos";
             this.CopyPhotos.UseVisualStyleBackColor = true;
@@ -101,52 +100,43 @@
             // 
             // AddDestination
             // 
-            this.AddDestination.Location = new System.Drawing.Point(128, 12);
+            this.AddDestination.Location = new System.Drawing.Point(96, 12);
             this.AddDestination.Name = "AddDestination";
-            this.AddDestination.Size = new System.Drawing.Size(110, 23);
+            this.AddDestination.Size = new System.Drawing.Size(75, 23);
             this.AddDestination.TabIndex = 4;
-            this.AddDestination.Text = "Add Destination";
+            this.AddDestination.Text = "Destination";
             this.AddDestination.UseVisualStyleBackColor = true;
+            this.AddDestination.Click += new System.EventHandler(this.AddDirectoryOnClick);
             // 
-            // RemoveAfterCopy
+            // DeleteCheckbox
             // 
-            this.RemoveAfterCopy.AutoSize = true;
-            this.RemoveAfterCopy.Location = new System.Drawing.Point(127, 448);
-            this.RemoveAfterCopy.Name = "RemoveAfterCopy";
-            this.RemoveAfterCopy.Size = new System.Drawing.Size(118, 17);
-            this.RemoveAfterCopy.TabIndex = 7;
-            this.RemoveAfterCopy.Text = "Remove After Copy";
-            this.RemoveAfterCopy.UseVisualStyleBackColor = true;
+            this.DeleteCheckbox.AutoSize = true;
+            this.DeleteCheckbox.Location = new System.Drawing.Point(96, 448);
+            this.DeleteCheckbox.Name = "DeleteCheckbox";
+            this.DeleteCheckbox.Size = new System.Drawing.Size(118, 17);
+            this.DeleteCheckbox.TabIndex = 7;
+            this.DeleteCheckbox.Text = "Remove After Copy";
+            this.DeleteCheckbox.UseVisualStyleBackColor = true;
+            this.DeleteCheckbox.CheckedChanged += new System.EventHandler(this.DeleteCheckboxOnCheckChanged);
             // 
-            // DestinationDirectoryLabel
+            // DestinationDirectoriesPanel
             // 
-            this.DestinationDirectoryLabel.AutoSize = true;
-            this.DestinationDirectoryLabel.Location = new System.Drawing.Point(350, 16);
-            this.DestinationDirectoryLabel.Name = "DestinationDirectoryLabel";
-            this.DestinationDirectoryLabel.Size = new System.Drawing.Size(0, 13);
-            this.DestinationDirectoryLabel.TabIndex = 8;
-            this.DestinationDirectoryLabel.Visible = false;
-            // 
-            // FilenamePrefixTextBox
-            // 
-            this.FilenamePrefixTextBox.Location = new System.Drawing.Point(244, 15);
-            this.FilenamePrefixTextBox.Name = "FilenamePrefixTextBox";
-            this.FilenamePrefixTextBox.Size = new System.Drawing.Size(100, 20);
-            this.FilenamePrefixTextBox.TabIndex = 9;
-            this.FilenamePrefixTextBox.Text = "File name prefix";
-            this.FilenamePrefixTextBox.Visible = false;
+            this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(174, 11);
+            this.DestinationDirectoriesPanel.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.DestinationDirectoriesPanel.Name = "DestinationDirectoriesPanel";
+            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(484, 22);
+            this.DestinationDirectoriesPanel.TabIndex = 8;
             // 
             // PhotoSorter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(670, 491);
-            this.Controls.Add(this.FilenamePrefixTextBox);
-            this.Controls.Add(this.DestinationDirectoryLabel);
+            this.Controls.Add(this.DestinationDirectoriesPanel);
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.CopyPhotos);
             this.Controls.Add(this.SourceDirectory);
-            this.Controls.Add(this.RemoveAfterCopy);
+            this.Controls.Add(this.DeleteCheckbox);
             this.Controls.Add(this.PhotoDisplay);
             this.Controls.Add(this.AddDestination);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -168,9 +158,8 @@
         private System.Windows.Forms.ToolStripStatusLabel StatusStripLabel;
         private System.Windows.Forms.ToolStripProgressBar ProgressBar;
         private System.Windows.Forms.Button AddDestination;
-        private System.Windows.Forms.CheckBox RemoveAfterCopy;
-        private System.Windows.Forms.Label DestinationDirectoryLabel;
-        private System.Windows.Forms.TextBox FilenamePrefixTextBox;
+        private System.Windows.Forms.CheckBox DeleteCheckbox;
+        private System.Windows.Forms.FlowLayoutPanel DestinationDirectoriesPanel;
     }
 }
 
