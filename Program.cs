@@ -15,7 +15,7 @@ namespace PhotoSorter
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PhotoSorter());
+            Application.Run(new PhotoSorterForm());
         }
     }
 }
