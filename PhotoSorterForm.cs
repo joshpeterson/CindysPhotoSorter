@@ -16,7 +16,7 @@ namespace PhotoSorter
     {
         #region Private members
 
-        private ImageList images;
+        private ImageList listViewImageList;
         private List<ListViewItem> listViewItems;
         private BackgroundWorker findPhotosWorker;
         private BackgroundWorker copyPhotosWorker;
@@ -72,7 +72,7 @@ namespace PhotoSorter
 
             if (result == DialogResult.OK)
             {
-                this.images = new ImageList();
+                this.listViewImageList = new ImageList();
                 this.listViewItems.Clear();
                 this.PhotoDisplay.Clear();
 
@@ -85,19 +85,29 @@ namespace PhotoSorter
 
         private void GetImagesInDirectory(object sender, DoWorkEventArgs e)
         {
-            this.images.ImageSize = new Size(128, 96);
-            this.images.ColorDepth = ColorDepth.Depth24Bit;
+            this.listViewImageList.ImageSize = new Size(128, 96);
+            this.listViewImageList.ColorDepth = ColorDepth.Depth24Bit;
 
             string directoryName = (string)e.Argument;
             int i = 0;
             int highestPercentageReached = 0;
-            IEnumerable<string> imageFileNamesInDirectory = GetImageFileNamesInDirectory(directoryName);
-            int numImages = imageFileNamesInDirectory.Count();
-            foreach (string fileName in imageFileNamesInDirectory)
+            IEnumerable<string> fileNamesToListInDirectory = GetFileNamesToListInDirectory(directoryName);
+            int numImages = fileNamesToListInDirectory.Count();
+            foreach (string fileName in fileNamesToListInDirectory)
             {
-                ImageData imageData = this.GetImageData(fileName);
-                images.Images.Add(imageData.Thumbnail);
-                ListViewItem item = new ListViewItem(string.Format("{0}\n{1}", Path.GetFileName(fileName), imageData.DateTaken != DateTime.MinValue ? imageData.DateTaken.ToString() : "Unknown date"));
+                ListViewItem item = null;
+
+                if (this.IsImageFile(fileName))
+                {
+                    ImageData imageData = this.GetImageData(fileName);
+                    this.listViewImageList.Images.Add(imageData.Thumbnail);
+                    item = new ListViewItem(string.Format("{0}\n{1}", Path.GetFileName(fileName), imageData.DateTaken != DateTime.MinValue ? imageData.DateTaken.ToString() : "Unknown date"));
+                }
+                else
+                {
+                    item = new ListViewItem(Path.GetFileName(fileName));
+                }
+
                 item.ImageIndex = i;
                 item.Tag = fileName;
                 this.listViewItems.Add(item);
@@ -134,23 +144,29 @@ namespace PhotoSorter
             }
         }
 
-        private IEnumerable<string> GetImageFileNamesInDirectory(string directoryName)
+        private IEnumerable<string> GetFileNamesToListInDirectory(string directoryName)
         {
-            List<string> imageFileNames = new List<string>();
+            List<string> fileNamesToList = new List<string>();
             foreach (string fileName in Directory.GetFiles(directoryName))
             {
-                if (IsImageFile(fileName))
+                if (IsImageFile(fileName) || IsVideoFile(fileName))
                 {
-                    imageFileNames.Add(fileName);
+                    fileNamesToList.Add(fileName);
                 }
             }
-            return imageFileNames;
+            return fileNamesToList;
         }
 
         private bool IsImageFile(string fileName)
         {
             string extension = Path.GetExtension(fileName).ToLower();
             return extension == ".jpg" || extension == ".png";
+        }
+
+        private bool IsVideoFile(string fileName)
+        {
+            string extension = Path.GetExtension(fileName).ToLower();
+            return extension == ".mov";
         }
 
         private Image GetImageThumbnail(Image image, string fileName)
@@ -203,7 +219,7 @@ namespace PhotoSorter
 
         private void SetUpListView(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.PhotoDisplay.LargeImageList = this.images;
+            this.PhotoDisplay.LargeImageList = this.listViewImageList;
             foreach (ListViewItem item in this.listViewItems)
             {
                 this.PhotoDisplay.Items.Add(item);
