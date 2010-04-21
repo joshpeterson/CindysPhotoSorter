@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.Collections;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace PhotoSorter
 {
@@ -18,11 +20,10 @@ namespace PhotoSorter
 
         private ImageList listViewImageList;
         private List<ListViewItem> listViewItems;
-        private BackgroundWorker findPhotosWorker;
-        private BackgroundWorker copyPhotosWorker;
-        private List<string> photosDeletedDuringCopy;
+        private BackgroundWorker findItemsWorker;
+        private BackgroundWorker copyItemsWorker;
+        private List<string> itemsDeletedDuringCopy;
         private DestinationDirectoryInformation destinationDirectory;
-        private Timer selectPhotoDisplayDelayTimer;
 
         #endregion
 
@@ -33,37 +34,33 @@ namespace PhotoSorter
             InitializeComponent();
 
             this.listViewItems = new List<ListViewItem>();
-            this.photosDeletedDuringCopy = new List<string>();
+            this.itemsDeletedDuringCopy = new List<string>();
             
-            this.findPhotosWorker = new BackgroundWorker();
-            this.findPhotosWorker.WorkerReportsProgress = true;
-            this.findPhotosWorker.DoWork += new DoWorkEventHandler(this.GetImagesInDirectory);
-            this.findPhotosWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.SetUpListView);
-            this.findPhotosWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.ClearProgressBar);
-            this.findPhotosWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.SortPhotoDisplay);
-            this.findPhotosWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateFindPhotosProgress);
+            this.findItemsWorker = new BackgroundWorker();
+            this.findItemsWorker.WorkerReportsProgress = true;
+            this.findItemsWorker.DoWork += new DoWorkEventHandler(this.GetItemsInDirectory);
+            this.findItemsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.SetUpListView);
+            this.findItemsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.ClearProgressBar);
+            this.findItemsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.SortItemDisplay);
+            this.findItemsWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateFindItemsProgress);
 
             this.destinationDirectory = null;
 
-            this.copyPhotosWorker = new BackgroundWorker();
-            this.copyPhotosWorker.WorkerReportsProgress = true;
-            this.copyPhotosWorker.DoWork += new DoWorkEventHandler(this.CopyImages);
-            this.copyPhotosWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.PhotoCopyComplete);
-            this.copyPhotosWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.ClearProgressBar);
-            this.copyPhotosWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateCopyPhotosProgress);
+            this.copyItemsWorker = new BackgroundWorker();
+            this.copyItemsWorker.WorkerReportsProgress = true;
+            this.copyItemsWorker.DoWork += new DoWorkEventHandler(this.CopyItems);
+            this.copyItemsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.ItemCopyComplete);
+            this.copyItemsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.ClearProgressBar);
+            this.copyItemsWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateCopyItemsProgress);
 
-            this.selectPhotoDisplayDelayTimer = new Timer();
-            this.selectPhotoDisplayDelayTimer.Interval = 500;
-            this.selectPhotoDisplayDelayTimer.Tick += new EventHandler(this.OnSelectPhotoDisplayDelayTimerComplete);
-
-            this.StatusStripLabel.Text = "Click Find Photos to select current photo location.";
+            this.StatusStripLabel.Text = "Click Find Photos and Videos.";
         }
 
         #endregion
 
-        #region FindPhotosOnClick handler and helpers
+        #region FindItemsOnClick handler and helpers
 
-        private void FindPhotosOnClick(object sender, EventArgs e)
+        private void FindItemsOnClick(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
             folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
@@ -74,16 +71,16 @@ namespace PhotoSorter
             {
                 this.listViewImageList = new ImageList();
                 this.listViewItems.Clear();
-                this.PhotoDisplay.Clear();
+                this.ItemDisplay.Clear();
 
-                this.findPhotosWorker.RunWorkerAsync(folderBrowser.SelectedPath);
+                this.findItemsWorker.RunWorkerAsync(folderBrowser.SelectedPath);
 
-                this.StatusStripLabel.Text = string.Format("Finding photos in {0}...", folderBrowser.SelectedPath);
+                this.StatusStripLabel.Text = string.Format("Finding photos and videos in {0}...", folderBrowser.SelectedPath);
 
             }
         }
 
-        private void GetImagesInDirectory(object sender, DoWorkEventArgs e)
+        private void GetItemsInDirectory(object sender, DoWorkEventArgs e)
         {
             this.listViewImageList.ImageSize = new Size(128, 96);
             this.listViewImageList.ColorDepth = ColorDepth.Depth24Bit;
@@ -105,6 +102,14 @@ namespace PhotoSorter
                 }
                 else
                 {
+                    SHFILEINFO shinfo = new SHFILEINFO();
+                    IntPtr hImgSmall = Win32.SHGetFileInfo(fileName, 0, ref shinfo,
+                                  (uint)Marshal.SizeOf(shinfo),
+                                   Win32.SHGFI_ICON |
+                                   Win32.SHGFI_LARGEICON);
+                    Icon myIcon = Icon.FromHandle(shinfo.hIcon);
+
+                    this.listViewImageList.Images.Add(myIcon);
                     item = new ListViewItem(Path.GetFileName(fileName));
                 }
 
@@ -117,7 +122,7 @@ namespace PhotoSorter
                 if (percentComplete > highestPercentageReached)
                 {
                     highestPercentageReached = percentComplete;
-                    this.findPhotosWorker.ReportProgress(percentComplete, fileName);
+                    this.findItemsWorker.ReportProgress(percentComplete, fileName);
                 }
             }
         }
@@ -183,7 +188,7 @@ namespace PhotoSorter
             }
             catch (ArgumentException)
             {
-                // We can't get the thumbnail resource, so load the entire photo and generate
+                // We can't get the thumbnail resource, so load the entire item and generate
                 // the thumbnail.  This is pretty slow.
                 using (Bitmap fullImage = new Bitmap(fileName))
                 {
@@ -215,39 +220,39 @@ namespace PhotoSorter
 
         #endregion
 
-        #region findPhotosWorker callbacks
+        #region findItemsWorker callbacks
 
         private void SetUpListView(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.PhotoDisplay.LargeImageList = this.listViewImageList;
+            this.ItemDisplay.LargeImageList = this.listViewImageList;
             foreach (ListViewItem item in this.listViewItems)
             {
-                this.PhotoDisplay.Items.Add(item);
+                this.ItemDisplay.Items.Add(item);
             }
 
-            if (this.PhotoDisplay.Items.Count == 0)
+            if (this.ItemDisplay.Items.Count == 0)
             {
-                this.StatusStripLabel.Text = "No photos found";
+                this.StatusStripLabel.Text = "No photos or videos found";
             }
-            else if (this.PhotoDisplay.Items.Count == 1)
+            else if (this.ItemDisplay.Items.Count == 1)
             {
-                this.StatusStripLabel.Text = string.Format("{0} photo found.", this.PhotoDisplay.Items.Count);
+                this.StatusStripLabel.Text = string.Format("{0} item found.", this.ItemDisplay.Items.Count);
             }
             else
             {
-                this.StatusStripLabel.Text = string.Format("{0} photos found.  Select photos to copy.", this.PhotoDisplay.Items.Count);
+                this.StatusStripLabel.Text = string.Format("{0} items found.  Select items to copy.", this.ItemDisplay.Items.Count);
             }
         }
 
-        private void UpdateFindPhotosProgress(object sender, ProgressChangedEventArgs e)
+        private void UpdateFindItemsProgress(object sender, ProgressChangedEventArgs e)
         {
             this.ProgressBar.Value = e.ProgressPercentage;
-            this.StatusStripLabel.Text = string.Format("Processed photo {0}", Path.GetFullPath((string)e.UserState));
+            this.StatusStripLabel.Text = string.Format("Processed item {0}", Path.GetFullPath((string)e.UserState));
         }
 
-        private void SortPhotoDisplay(object sender, RunWorkerCompletedEventArgs e)
+        private void SortItemDisplay(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.PhotoDisplay.Sort();
+            this.ItemDisplay.Sort();
         }
 
         #endregion
@@ -278,20 +283,20 @@ namespace PhotoSorter
                 }
             }
 
-            this.PhotoDisplay.Select();
+            this.ItemDisplay.Select();
 
-            this.StatusStripLabel.Text = "Click Copy Photos to copy photos to the destination directory.";
+            this.StatusStripLabel.Text = "Click Copy Photos and Videos to copy photos and videos to the destination directory.";
         }
 
         #endregion
 
-        #region CopyPhotosOnClick handler and helpers
+        #region CopyItemsOnClick handler and helpers
 
-        private void CopyPhotosOnClick(object sender, EventArgs e)
+        private void CopyItemsOnClick(object sender, EventArgs e)
         {
-            if (this.PhotoDisplay.SelectedItems.Count == 0)
+            if (this.ItemDisplay.SelectedItems.Count == 0)
             {
-                this.StatusStripLabel.Text = "Please select at least one photo to copy.";
+                this.StatusStripLabel.Text = "Please select at least one item to copy.";
                 return;
             }
 
@@ -307,56 +312,56 @@ namespace PhotoSorter
                 return;
             }
 
-            this.PhotoDisplay.Select();
+            this.ItemDisplay.Select();
 
-            int numPhotos = this.PhotoDisplay.SelectedItems.Count;
+            int numPhotos = this.ItemDisplay.SelectedItems.Count;
             if (numPhotos > 0)
             {
-                List<string> photoFileNames = new List<string>();
-                foreach (ListViewItem photo in this.PhotoDisplay.SelectedItems)
+                List<string> itemFileNames = new List<string>();
+                foreach (ListViewItem item in this.ItemDisplay.SelectedItems)
                 {
-                    photoFileNames.Add(photo.Tag.ToString());
+                    itemFileNames.Add(item.Tag.ToString());
                 }
 
-                CopyPhotoInformation copyInformation = new CopyPhotoInformation();
-                copyInformation.PhotoFileNames = photoFileNames;
-                copyInformation.DeleteSourcePhotoAfterCopy = this.DeleteCheckbox.Checked;
-                copyInformation.NumberOfPhotos = numPhotos;
+                CopyItemInformation copyInformation = new CopyItemInformation();
+                copyInformation.ItemFileNames = itemFileNames;
+                copyInformation.DeleteSourceItemAfterCopy = this.DeleteCheckbox.Checked;
+                copyInformation.NumberOfItems = numPhotos;
 
-                this.copyPhotosWorker.RunWorkerAsync(copyInformation);
+                this.copyItemsWorker.RunWorkerAsync(copyInformation);
 
-                this.StatusStripLabel.Text = "Copying photos...";
+                this.StatusStripLabel.Text = "Copying items...";
             }
         }
 
-        private void CopyImages(object sender, DoWorkEventArgs e)
+        private void CopyItems(object sender, DoWorkEventArgs e)
         {
             int highestPercentageReached = 0;
             int fileNameCounter = 1;
             int i = 0;
-            CopyPhotoInformation copyInformation = (CopyPhotoInformation)e.Argument;
-            foreach (string fileName in copyInformation.PhotoFileNames)
+            CopyItemInformation copyInformation = (CopyItemInformation)e.Argument;
+            foreach (string fileName in copyInformation.ItemFileNames)
             {
-                string newFileName = Path.Combine(this.destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", this.destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfPhotos), Path.GetExtension(fileName)));
+                string newFileName = Path.Combine(this.destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", this.destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfItems), Path.GetExtension(fileName)));
                 while (File.Exists(newFileName))
                 {
                     fileNameCounter++;
-                    newFileName = Path.Combine(this.destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", this.destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfPhotos), Path.GetExtension(fileName)));
+                    newFileName = Path.Combine(this.destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", this.destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfItems), Path.GetExtension(fileName)));
                 }
 
                 File.Copy(fileName, newFileName);
 
-                if (copyInformation.DeleteSourcePhotoAfterCopy)
+                if (copyInformation.DeleteSourceItemAfterCopy)
                 {
                     File.Delete(fileName);
-                    this.photosDeletedDuringCopy.Add(fileName);
+                    this.itemsDeletedDuringCopy.Add(fileName);
                 }
 
-                int percentComplete = (int)((float)i / (float)copyInformation.NumberOfPhotos * 100);
+                int percentComplete = (int)((float)i / (float)copyInformation.NumberOfItems * 100);
                 if (percentComplete > highestPercentageReached)
                 {
                     highestPercentageReached = percentComplete;
-                    this.copyPhotosWorker.ReportProgress(percentComplete);
+                    this.copyItemsWorker.ReportProgress(percentComplete);
                 }
 
                 fileNameCounter++;
@@ -364,19 +369,19 @@ namespace PhotoSorter
             }
         }
 
-        private void RemoveDeletedPhotos()
+        private void RemoveDeletedItems()
         {
-            foreach (string fileName in this.photosDeletedDuringCopy)
+            foreach (string fileName in this.itemsDeletedDuringCopy)
             {
-                foreach (ListViewItem item in this.PhotoDisplay.Items)
+                foreach (ListViewItem item in this.ItemDisplay.Items)
                 {
                     if ((string)item.Tag == fileName)
                     {
-                        this.PhotoDisplay.Items.Remove(item);
+                        this.ItemDisplay.Items.Remove(item);
                     }
                 }
             }
-            this.photosDeletedDuringCopy.Clear();
+            this.itemsDeletedDuringCopy.Clear();
         }
 
         private string GetFileNameNumber(int fileNameCounter, int numPhotos)
@@ -389,32 +394,32 @@ namespace PhotoSorter
             return fileNameCounter.ToString();
         }
 
-        struct CopyPhotoInformation
+        struct CopyItemInformation
         {
-            public List<string> PhotoFileNames;
-            public int NumberOfPhotos;
-            public bool DeleteSourcePhotoAfterCopy;
+            public List<string> ItemFileNames;
+            public int NumberOfItems;
+            public bool DeleteSourceItemAfterCopy;
         }
 
         #endregion
 
-        #region copyPhotosWorker callbacks
+        #region copyItemsWorker callbacks
 
-        private void PhotoCopyComplete(object sender, RunWorkerCompletedEventArgs e)
+        private void ItemCopyComplete(object sender, RunWorkerCompletedEventArgs e)
         {
-            RemoveDeletedPhotos();
+            RemoveDeletedItems();
 
-            this.PhotoDisplay.Sort();
+            this.ItemDisplay.Sort();
 
             if (this.DeleteCheckbox.Checked)
             {
                 this.DeleteCheckbox.Checked = false;
             }
 
-            this.StatusStripLabel.Text = "Photos copied successfully.";
+            this.StatusStripLabel.Text = "Photos and videos copied successfully.";
         }
 
-        private void UpdateCopyPhotosProgress(object sender, ProgressChangedEventArgs e)
+        private void UpdateCopyItemsProgress(object sender, ProgressChangedEventArgs e)
         {
             this.ProgressBar.Value = e.ProgressPercentage;
         }
@@ -434,18 +439,21 @@ namespace PhotoSorter
 
         private void OnSelectionedIndexChanged(object sender, EventArgs e)
         {
-            this.StatusStripLabel.Text = string.Format("{0} of {1} photos selected.", this.PhotoDisplay.SelectedItems.Count, this.PhotoDisplay.Items.Count);
-        }
-
-        private void OnSelectPhotoDisplayDelayTimerComplete(object sender, EventArgs e)
-        {
-            this.PhotoDisplay.Select();
-            this.selectPhotoDisplayDelayTimer.Stop();
+            this.StatusStripLabel.Text = string.Format("{0} of {1} photos selected.", this.ItemDisplay.SelectedItems.Count, this.ItemDisplay.Items.Count);
         }
 
         private void DeleteCheckboxOnCheckChanged(object sender, EventArgs e)
         {
-            this.PhotoDisplay.Select();
+            this.ItemDisplay.Select();
+        }
+
+        private void OnItemDoubleClick(object sender, EventArgs e)
+        {
+            if (this.ItemDisplay.SelectedItems.Count == 1)
+            {
+                string clickedItemFileName = this.ItemDisplay.SelectedItems[0].Tag.ToString();
+                Process.Start(clickedItemFileName);
+            }
         }
 
         #endregion
