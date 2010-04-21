@@ -439,7 +439,7 @@ namespace PhotoSorter
 
         private void OnSelectionedIndexChanged(object sender, EventArgs e)
         {
-            this.StatusStripLabel.Text = string.Format("{0} of {1} photos selected.", this.ItemDisplay.SelectedItems.Count, this.ItemDisplay.Items.Count);
+            this.StatusStripLabel.Text = string.Format("{0} of {1} items selected.", this.ItemDisplay.SelectedItems.Count, this.ItemDisplay.Items.Count);
         }
 
         private void DeleteCheckboxOnCheckChanged(object sender, EventArgs e)
