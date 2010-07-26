@@ -24,6 +24,8 @@ namespace PhotoSorter
         private BackgroundWorker copyItemsWorker;
         private List<string> itemsDeletedDuringCopy;
         private DestinationDirectoryInformation destinationDirectory;
+        private string lastSelectedFindItemsPath;
+        private string lastCopyItemsPath;
 
         #endregion
 
@@ -53,6 +55,9 @@ namespace PhotoSorter
             this.copyItemsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.ClearProgressBar);
             this.copyItemsWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateCopyItemsProgress);
 
+            this.lastSelectedFindItemsPath = null;
+            this.lastCopyItemsPath = null;
+
             this.StatusStripLabel.Text = "Click Find Photos and Videos.";
         }
 
@@ -63,12 +68,22 @@ namespace PhotoSorter
         private void FindItemsOnClick(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
-            folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+
+            if (string.IsNullOrEmpty(this.lastSelectedFindItemsPath))
+            {
+                folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+            }
+            else
+            {
+                folderBrowser.SelectedPath = this.lastSelectedFindItemsPath;
+            }
 
             DialogResult result = folderBrowser.ShowDialog();
 
             if (result == DialogResult.OK)
             {
+                this.lastSelectedFindItemsPath = folderBrowser.SelectedPath;
+
                 this.listViewImageList = new ImageList();
                 this.listViewItems.Clear();
                 this.ItemDisplay.Clear();
@@ -262,16 +277,26 @@ namespace PhotoSorter
         private void DirectoryOnClick(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
-            folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
-            folderBrowser.ShowDialog();
-
-            if (!string.IsNullOrEmpty(folderBrowser.SelectedPath))
+            if (string.IsNullOrEmpty(this.lastCopyItemsPath))
             {
-                FileNamePrefixForm fileNamePrefixForm = new FileNamePrefixForm(folderBrowser.SelectedPath);
-                DialogResult result = fileNamePrefixForm.ShowDialog();
+                folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            }
+            else
+            {
+                folderBrowser.SelectedPath = this.lastCopyItemsPath;
+            }
 
-                if (result == DialogResult.OK)
+            DialogResult folderResult = folderBrowser.ShowDialog();
+
+            if (folderResult == DialogResult.OK)
+            {
+                this.lastCopyItemsPath = folderBrowser.SelectedPath;
+
+                FileNamePrefixForm fileNamePrefixForm = new FileNamePrefixForm(folderBrowser.SelectedPath);
+                DialogResult fileNamePrefixResult = fileNamePrefixForm.ShowDialog();
+
+                if (fileNamePrefixResult == DialogResult.OK)
                 {
                     if (this.destinationDirectory != null)
                     {
