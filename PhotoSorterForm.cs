@@ -248,6 +248,7 @@ namespace PhotoSorter
             if (this.ItemDisplay.Items.Count == 0)
             {
                 this.StatusStripLabel.Text = "No photos or videos found";
+                MessageBox.Show(this, "No photos or videos found!", "Find Photos and Videos", MessageBoxButtons.OK);
             }
             else if (this.ItemDisplay.Items.Count == 1)
             {
@@ -322,18 +323,21 @@ namespace PhotoSorter
             if (this.ItemDisplay.SelectedItems.Count == 0)
             {
                 this.StatusStripLabel.Text = "Please select at least one item to copy.";
+                MessageBox.Show(this, "Please select at least one item to copy.", "Select an Item", MessageBoxButtons.OK);
                 return;
             }
 
             if (this.destinationDirectory == null)
             {
                 this.StatusStripLabel.Text = "Please add a destination directory.";
+                MessageBox.Show(this, "Please add a destination directory.", "Select Directory", MessageBoxButtons.OK);
                 return;
             }
 
             if (string.IsNullOrEmpty(destinationDirectory.FileNamePrefix))
             {
-                this.StatusStripLabel.Text = "Please select a file name prefix for the destinations directory.";
+                this.StatusStripLabel.Text = "Please select a file name prefix for the destination directory.";
+                MessageBox.Show(this, "Please select a file name prefix for the destination directory.", "Select Prefix", MessageBoxButtons.OK);
                 return;
             }
 
