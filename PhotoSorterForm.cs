@@ -446,6 +446,7 @@ namespace PhotoSorter
             }
 
             this.StatusStripLabel.Text = "Photos and videos copied successfully.";
+            MessageBox.Show(this, "Photos and videos copied successfully.", "Copy Complete", MessageBoxButtons.OK);
         }
 
         private void UpdateCopyItemsProgress(object sender, ProgressChangedEventArgs e)
