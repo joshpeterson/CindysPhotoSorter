@@ -46,9 +46,9 @@
             this.ItemDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.ItemDisplay.Location = new System.Drawing.Point(12, 40);
+            this.ItemDisplay.Location = new System.Drawing.Point(12, 68);
             this.ItemDisplay.Name = "ItemDisplay";
-            this.ItemDisplay.Size = new System.Drawing.Size(646, 398);
+            this.ItemDisplay.Size = new System.Drawing.Size(646, 370);
             this.ItemDisplay.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.ItemDisplay.TabIndex = 0;
             this.ItemDisplay.UseCompatibleStateImageBehavior = false;
@@ -100,11 +100,11 @@
             // 
             // AddDestination
             // 
-            this.AddDestination.Location = new System.Drawing.Point(146, 10);
+            this.AddDestination.Location = new System.Drawing.Point(12, 39);
             this.AddDestination.Name = "AddDestination";
-            this.AddDestination.Size = new System.Drawing.Size(75, 23);
+            this.AddDestination.Size = new System.Drawing.Size(91, 23);
             this.AddDestination.TabIndex = 4;
-            this.AddDestination.Text = "Destination";
+            this.AddDestination.Text = "Add Destination";
             this.AddDestination.UseVisualStyleBackColor = true;
             this.AddDestination.Click += new System.EventHandler(this.DirectoryOnClick);
             // 
@@ -122,10 +122,13 @@
             // 
             // DestinationDirectoriesPanel
             // 
-            this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(224, 11);
+            this.DestinationDirectoriesPanel.AutoScroll = true;
+            this.DestinationDirectoriesPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(152, 11);
             this.DestinationDirectoriesPanel.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.DestinationDirectoriesPanel.MaximumSize = new System.Drawing.Size(506, 51);
             this.DestinationDirectoriesPanel.Name = "DestinationDirectoriesPanel";
-            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(434, 22);
+            this.DestinationDirectoriesPanel.Size = new System.Drawing.Size(506, 51);
             this.DestinationDirectoriesPanel.TabIndex = 8;
             // 
             // PhotoSorterForm

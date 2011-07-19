@@ -23,7 +23,7 @@ namespace PhotoSorter
         private BackgroundWorker findItemsWorker;
         private BackgroundWorker copyItemsWorker;
         private List<string> itemsDeletedDuringCopy;
-        private DestinationDirectoryInformation destinationDirectory;
+        private List<DestinationDirectoryInformation> destinationDirectories;
         private string lastSelectedFindItemsPath;
         private string lastCopyItemsPath;
 
@@ -46,7 +46,7 @@ namespace PhotoSorter
             this.findItemsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.SortItemDisplay);
             this.findItemsWorker.ProgressChanged += new ProgressChangedEventHandler(this.UpdateFindItemsProgress);
 
-            this.destinationDirectory = null;
+            this.destinationDirectories = new List<DestinationDirectoryInformation>();
 
             this.copyItemsWorker = new BackgroundWorker();
             this.copyItemsWorker.WorkerReportsProgress = true;
@@ -294,17 +294,23 @@ namespace PhotoSorter
             {
                 this.lastCopyItemsPath = folderBrowser.SelectedPath;
 
-                FileNamePrefixForm fileNamePrefixForm = new FileNamePrefixForm(folderBrowser.SelectedPath);
-                DialogResult fileNamePrefixResult = fileNamePrefixForm.ShowDialog();
+                string fileNamePrefix = null;
+                DialogResult fileNamePrefixResult = DialogResult.OK;
+                if (this.destinationDirectories.Count == 0)
+                {
+                    FileNamePrefixForm fileNamePrefixForm = new FileNamePrefixForm(folderBrowser.SelectedPath);
+                    fileNamePrefixResult = fileNamePrefixForm.ShowDialog();
+                    fileNamePrefix = fileNamePrefixForm.FileNamePrefix;
+                }
+                else
+                {
+                    fileNamePrefix = this.destinationDirectories[0].FileNamePrefix;
+                }
 
                 if (fileNamePrefixResult == DialogResult.OK)
                 {
-                    if (this.destinationDirectory != null)
-                    {
-                        this.destinationDirectory.RemoveFromPanel(this.DestinationDirectoriesPanel);
-                    }
-
-                    this.destinationDirectory = new DestinationDirectoryInformation(folderBrowser.SelectedPath, fileNamePrefixForm.FileNamePrefix);
+                    DestinationDirectoryInformation destinationDirectory = new DestinationDirectoryInformation(folderBrowser.SelectedPath, fileNamePrefix);
+                    this.destinationDirectories.Add(destinationDirectory);
                     destinationDirectory.AddToPanel(this.DestinationDirectoriesPanel);
                 }
             }
@@ -327,14 +333,14 @@ namespace PhotoSorter
                 return;
             }
 
-            if (this.destinationDirectory == null)
+            if (this.destinationDirectories.Count == 0)
             {
                 this.StatusStripLabel.Text = "Please add a destination directory.";
                 MessageBox.Show(this, "Please add a destination directory.", "Select Directory", MessageBoxButtons.OK);
                 return;
             }
 
-            if (string.IsNullOrEmpty(destinationDirectory.FileNamePrefix))
+            if (string.IsNullOrEmpty(destinationDirectories[0].FileNamePrefix))
             {
                 this.StatusStripLabel.Text = "Please select a file name prefix for the destination directory.";
                 MessageBox.Show(this, "Please select a file name prefix for the destination directory.", "Select Prefix", MessageBoxButtons.OK);
@@ -366,35 +372,38 @@ namespace PhotoSorter
         private void CopyItems(object sender, DoWorkEventArgs e)
         {
             int highestPercentageReached = 0;
-            int fileNameCounter = 1;
             int i = 0;
-            CopyItemInformation copyInformation = (CopyItemInformation)e.Argument;
-            foreach (string fileName in copyInformation.ItemFileNames)
+            foreach (DestinationDirectoryInformation destinationDirectory in this.destinationDirectories)
             {
-                string newFileName = Path.Combine(this.destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", this.destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfItems), Path.GetExtension(fileName)));
-                while (File.Exists(newFileName))
+                int fileNameCounter = 1;
+                CopyItemInformation copyInformation = (CopyItemInformation)e.Argument;
+                foreach (string fileName in copyInformation.ItemFileNames)
                 {
+                    string newFileName = Path.Combine(destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfItems), Path.GetExtension(fileName)));
+                    while (File.Exists(newFileName))
+                    {
+                        fileNameCounter++;
+                        newFileName = Path.Combine(destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfItems), Path.GetExtension(fileName)));
+                    }
+
+                    File.Copy(fileName, newFileName);
+
+                    if (copyInformation.DeleteSourceItemAfterCopy)
+                    {
+                        File.Delete(fileName);
+                        this.itemsDeletedDuringCopy.Add(fileName);
+                    }
+
+                    int percentComplete = (int)((float)i / (float)copyInformation.NumberOfItems * this.destinationDirectories.Count * 100);
+                    if (percentComplete > highestPercentageReached)
+                    {
+                        highestPercentageReached = percentComplete;
+                        this.copyItemsWorker.ReportProgress(percentComplete);
+                    }
+
                     fileNameCounter++;
-                    newFileName = Path.Combine(this.destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", this.destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfItems), Path.GetExtension(fileName)));
+                    i++;
                 }
-
-                File.Copy(fileName, newFileName);
-
-                if (copyInformation.DeleteSourceItemAfterCopy)
-                {
-                    File.Delete(fileName);
-                    this.itemsDeletedDuringCopy.Add(fileName);
-                }
-
-                int percentComplete = (int)((float)i / (float)copyInformation.NumberOfItems * 100);
-                if (percentComplete > highestPercentageReached)
-                {
-                    highestPercentageReached = percentComplete;
-                    this.copyItemsWorker.ReportProgress(percentComplete);
-                }
-
-                fileNameCounter++;
-                i++;
             }
         }
 
