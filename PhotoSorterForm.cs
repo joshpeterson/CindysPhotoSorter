@@ -454,6 +454,9 @@ namespace PhotoSorter
                 this.DeleteCheckbox.Checked = false;
             }
 
+            this.destinationDirectories.Clear();
+            this.DestinationDirectoriesPanel.Controls.Clear();
+
             this.StatusStripLabel.Text = "Photos and videos copied successfully.";
             MessageBox.Show(this, "Photos and videos copied successfully.", "Copy Complete", MessageBoxButtons.OK);
         }
