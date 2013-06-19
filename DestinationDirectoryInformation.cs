@@ -14,7 +14,7 @@ namespace PhotoSorter
             this.destinationDirectoryDisplay = new Label();
             this.destinationDirectoryDisplay.Height = 1;
             this.destinationDirectoryDisplay.AutoSize = true;
-            this.destinationDirectoryDisplay.Text = string.Format("{0}\\{1}", this.destinationDirectoryName, fileNamePrefix);
+            this.destinationDirectoryDisplay.Text = string.Format("Prefix: {0} - Directory: {1}", fileNamePrefix, this.destinationDirectoryName);
             this.destinationDirectoryDisplay.Padding = new Padding(0, 6, 0, 0);
         }
 
