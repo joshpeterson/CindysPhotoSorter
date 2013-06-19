@@ -16,7 +16,7 @@ namespace PhotoSorter
         public FileNamePrefixForm(string destinationDirectory)
         {
             InitializeComponent();
-            this.destinationDirectoryLabel.Text = destinationDirectory;
+            this.destinationDirectoryLabel.Text = string.Format("Directory: {0}", destinationDirectory);
         }
 
         public string FileNamePrefix

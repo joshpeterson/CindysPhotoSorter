@@ -277,7 +277,7 @@ namespace PhotoSorter
 
         private void DirectoryOnClick(object sender, EventArgs e)
         {
-            FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
+            var folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog();
 
             if (string.IsNullOrEmpty(this.lastCopyItemsPath))
             {
@@ -296,16 +296,10 @@ namespace PhotoSorter
 
                 string fileNamePrefix = null;
                 DialogResult fileNamePrefixResult = DialogResult.OK;
-                if (this.destinationDirectories.Count == 0)
-                {
-                    FileNamePrefixForm fileNamePrefixForm = new FileNamePrefixForm(folderBrowser.SelectedPath);
-                    fileNamePrefixResult = fileNamePrefixForm.ShowDialog();
-                    fileNamePrefix = fileNamePrefixForm.FileNamePrefix;
-                }
-                else
-                {
-                    fileNamePrefix = this.destinationDirectories[0].FileNamePrefix;
-                }
+
+                FileNamePrefixForm fileNamePrefixForm = new FileNamePrefixForm(folderBrowser.SelectedPath);
+                fileNamePrefixResult = fileNamePrefixForm.ShowDialog();
+                fileNamePrefix = fileNamePrefixForm.FileNamePrefix;
 
                 if (fileNamePrefixResult == DialogResult.OK)
                 {
@@ -317,7 +311,10 @@ namespace PhotoSorter
 
             this.ItemDisplay.Select();
 
-            this.StatusStripLabel.Text = "Click Copy Photos and Videos to copy photos and videos to the destination directory.";
+            if (this.destinationDirectories.Count == 1)
+                this.StatusStripLabel.Text = "Click Copy Photos and Videos to copy photos and videos to the destination directory.";
+            else if (this.destinationDirectories.Count > 1)
+                this.StatusStripLabel.Text = "Click Copy Photos and Videos to copy photos and videos to the destination directories.";
         }
 
         #endregion
@@ -372,11 +369,15 @@ namespace PhotoSorter
         private void CopyItems(object sender, DoWorkEventArgs e)
         {
             int highestPercentageReached = 0;
-            int i = 0;
+            int currentFileToCopyNumber = 1;
+
+            CopyItemInformation copyInformation = (CopyItemInformation)e.Argument;
+
+            var numberOfFilesToCopy = copyInformation.NumberOfItems * this.destinationDirectories.Count;
+
             foreach (DestinationDirectoryInformation destinationDirectory in this.destinationDirectories)
             {
                 int fileNameCounter = 1;
-                CopyItemInformation copyInformation = (CopyItemInformation)e.Argument;
                 foreach (string fileName in copyInformation.ItemFileNames)
                 {
                     string newFileName = Path.Combine(destinationDirectory.DestinationDirectoryName, string.Format("{0} {1}{2}", destinationDirectory.FileNamePrefix, this.GetFileNameNumber(fileNameCounter, copyInformation.NumberOfItems), Path.GetExtension(fileName)));
@@ -388,13 +389,7 @@ namespace PhotoSorter
 
                     File.Copy(fileName, newFileName);
 
-                    if (copyInformation.DeleteSourceItemAfterCopy)
-                    {
-                        File.Delete(fileName);
-                        this.itemsDeletedDuringCopy.Add(fileName);
-                    }
-
-                    int percentComplete = (int)((float)i / (float)copyInformation.NumberOfItems * this.destinationDirectories.Count * 100);
+                    int percentComplete = (int)(((float)currentFileToCopyNumber / (float)numberOfFilesToCopy) * 100);
                     if (percentComplete > highestPercentageReached)
                     {
                         highestPercentageReached = percentComplete;
@@ -402,7 +397,16 @@ namespace PhotoSorter
                     }
 
                     fileNameCounter++;
-                    i++;
+                    currentFileToCopyNumber++;
+                }
+            }
+
+            foreach (var fileName in copyInformation.ItemFileNames)
+            {
+                if (copyInformation.DeleteSourceItemAfterCopy)
+                {
+                    File.Delete(fileName);
+                    this.itemsDeletedDuringCopy.Add(fileName);
                 }
             }
         }
@@ -453,6 +457,9 @@ namespace PhotoSorter
             {
                 this.DeleteCheckbox.Checked = false;
             }
+
+            this.destinationDirectories.Clear();
+            this.DestinationDirectoriesPanel.Controls.Clear();
 
             this.StatusStripLabel.Text = "Photos and videos copied successfully.";
             MessageBox.Show(this, "Photos and videos copied successfully.", "Copy Complete", MessageBoxButtons.OK);

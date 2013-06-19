@@ -123,6 +123,7 @@
             // DestinationDirectoriesPanel
             // 
             this.DestinationDirectoriesPanel.AutoScroll = true;
+            this.DestinationDirectoriesPanel.AutoSize = true;
             this.DestinationDirectoriesPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.DestinationDirectoriesPanel.Location = new System.Drawing.Point(152, 11);
             this.DestinationDirectoriesPanel.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
