@@ -93,7 +93,7 @@ namespace PhotoSorter
 
         private void GetItemsInDirectory(object sender, DoWorkEventArgs e)
         {
-            this.listViewImageList.ImageSize = new Size(128, 96);
+            this.listViewImageList.ImageSize = new Size(256, 192);
             this.listViewImageList.ColorDepth = ColorDepth.Depth24Bit;
 
             string directoryName = (string)e.Argument;
