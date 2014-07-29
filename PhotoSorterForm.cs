@@ -419,7 +419,7 @@ namespace PhotoSorter
 
             this.itemDisplay.Sort();
 
-            var copyMessage = string.Format("Photos and videos copied successfully to {0}", this.destinationDirectories.First().DestinationDirectoryName);
+            var copyMessage = string.Format("The photos and videos were copied successfully to the {0} directory.", this.destinationDirectories.First().DestinationDirectoryName);
 
             this.destinationDirectories.Clear();
 

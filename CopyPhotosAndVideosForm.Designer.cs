@@ -59,7 +59,7 @@
             // 
             this.copyButton.Enabled = false;
             this.copyButton.Location = new System.Drawing.Point(328, 66);
-            this.copyButton.Name = "okButton";
+            this.copyButton.Name = "copyButton";
             this.copyButton.Size = new System.Drawing.Size(75, 23);
             this.copyButton.TabIndex = 3;
             this.copyButton.Text = "Copy";
@@ -117,6 +117,7 @@
             // 
             // CopyPhotosAndVideosForm
             // 
+            this.AcceptButton = this.copyButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
