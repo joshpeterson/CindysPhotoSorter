@@ -92,7 +92,7 @@
             this.addDestination.TabIndex = 4;
             this.addDestination.Text = "Copy...";
             this.addDestination.UseVisualStyleBackColor = true;
-            this.addDestination.Click += new System.EventHandler(this.DirectoryOnClick);
+            this.addDestination.Click += new System.EventHandler(this.CopyOnClick);
             // 
             // PhotoSorterForm
             // 

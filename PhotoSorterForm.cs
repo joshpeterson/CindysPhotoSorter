@@ -267,13 +267,14 @@ namespace PhotoSorter
 
         #endregion
 
-        #region DirectoryOnClick
+        #region CopyOnClick
 
-        private void DirectoryOnClick(object sender, EventArgs e)
+        private void CopyOnClick(object sender, EventArgs e)
         {
             CopyPhotosAndVideosForm fileNamePrefixForm = new CopyPhotosAndVideosForm(this.lastCopyItemsPath);
             if (fileNamePrefixForm.ShowDialog() == DialogResult.OK)
             {
+                this.lastCopyItemsPath = fileNamePrefixForm.DestinationDirectory;
                 DestinationDirectoryInformation destinationDirectory = new DestinationDirectoryInformation(fileNamePrefixForm.DestinationDirectory, fileNamePrefixForm.FileNamePrefix);
                 this.destinationDirectories.Add(destinationDirectory);
 
