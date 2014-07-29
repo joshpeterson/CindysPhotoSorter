@@ -58,11 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DestinationDirectoryInformation.cs" />
-    <Compile Include="FileNamePrefixForm.cs">
+    <Compile Include="CopyPhotosAndVideosForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FileNamePrefixForm.Designer.cs">
-      <DependentUpon>FileNamePrefixForm.cs</DependentUpon>
+    <Compile Include="CopyPhotosAndVideosForm.Designer.cs">
+      <DependentUpon>CopyPhotosAndVideosForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PhotoSorterForm.cs">
       <SubType>Form</SubType>
@@ -72,8 +72,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FileNamePrefixForm.resx">
-      <DependentUpon>FileNamePrefixForm.cs</DependentUpon>
+    <EmbeddedResource Include="CopyPhotosAndVideosForm.resx">
+      <DependentUpon>CopyPhotosAndVideosForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PhotoSorterForm.resx">
       <DependentUpon>PhotoSorterForm.cs</DependentUpon>

@@ -58,7 +58,7 @@ namespace PhotoSorter
             this.lastSelectedFindItemsPath = null;
             this.lastCopyItemsPath = null;
 
-            this.StatusStripLabel.Text = "Click Find Photos and Videos.";
+            this.StatusStripLabel.Text = "Click \"Find photos and videos\".";
         }
 
         #endregion
@@ -67,7 +67,7 @@ namespace PhotoSorter
 
         private void FindItemsOnClick(object sender, EventArgs e)
         {
-            FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
+            var folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog();
 
             if (string.IsNullOrEmpty(this.lastSelectedFindItemsPath))
             {
@@ -248,7 +248,7 @@ namespace PhotoSorter
             if (this.ItemDisplay.Items.Count == 0)
             {
                 this.StatusStripLabel.Text = "No photos or videos found";
-                MessageBox.Show(this, "No photos or videos found!", "Find Photos and Videos", MessageBoxButtons.OK);
+                MessageBox.Show(this, "No photos or videos found!", "Find photos and videos", MessageBoxButtons.OK);
             }
             else if (this.ItemDisplay.Items.Count == 1)
             {
@@ -277,51 +277,23 @@ namespace PhotoSorter
 
         private void DirectoryOnClick(object sender, EventArgs e)
         {
-            var folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog();
-
-            if (string.IsNullOrEmpty(this.lastCopyItemsPath))
+            CopyPhotosAndVideosForm fileNamePrefixForm = new CopyPhotosAndVideosForm(this.lastCopyItemsPath);
+            if (fileNamePrefixForm.ShowDialog() == DialogResult.OK)
             {
-                folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            }
-            else
-            {
-                folderBrowser.SelectedPath = this.lastCopyItemsPath;
-            }
+                DestinationDirectoryInformation destinationDirectory = new DestinationDirectoryInformation(fileNamePrefixForm.DestinationDirectory, fileNamePrefixForm.FileNamePrefix);
+                this.destinationDirectories.Add(destinationDirectory);
 
-            DialogResult folderResult = folderBrowser.ShowDialog();
-
-            if (folderResult == DialogResult.OK)
-            {
-                this.lastCopyItemsPath = folderBrowser.SelectedPath;
-
-                string fileNamePrefix = null;
-                DialogResult fileNamePrefixResult = DialogResult.OK;
-
-                FileNamePrefixForm fileNamePrefixForm = new FileNamePrefixForm(folderBrowser.SelectedPath);
-                fileNamePrefixResult = fileNamePrefixForm.ShowDialog();
-                fileNamePrefix = fileNamePrefixForm.FileNamePrefix;
-
-                if (fileNamePrefixResult == DialogResult.OK)
-                {
-                    DestinationDirectoryInformation destinationDirectory = new DestinationDirectoryInformation(folderBrowser.SelectedPath, fileNamePrefix);
-                    this.destinationDirectories.Add(destinationDirectory);
-                    destinationDirectory.AddToPanel(this.DestinationDirectoriesPanel);
-                }
+                CopyItems(fileNamePrefixForm.DeleteFilesAfterCopy);
             }
 
             this.ItemDisplay.Select();
-
-            if (this.destinationDirectories.Count == 1)
-                this.StatusStripLabel.Text = "Click Copy Photos and Videos to copy photos and videos to the destination directory.";
-            else if (this.destinationDirectories.Count > 1)
-                this.StatusStripLabel.Text = "Click Copy Photos and Videos to copy photos and videos to the destination directories.";
         }
 
         #endregion
 
         #region CopyItemsOnClick handler and helpers
 
-        private void CopyItemsOnClick(object sender, EventArgs e)
+        private void CopyItems(bool deleteFilesAfterCopy)
         {
             if (this.ItemDisplay.SelectedItems.Count == 0)
             {
@@ -357,7 +329,7 @@ namespace PhotoSorter
 
                 CopyItemInformation copyInformation = new CopyItemInformation();
                 copyInformation.ItemFileNames = itemFileNames;
-                copyInformation.DeleteSourceItemAfterCopy = this.DeleteCheckbox.Checked;
+                copyInformation.DeleteSourceItemAfterCopy = deleteFilesAfterCopy;
                 copyInformation.NumberOfItems = numPhotos;
 
                 this.copyItemsWorker.RunWorkerAsync(copyInformation);
@@ -453,16 +425,12 @@ namespace PhotoSorter
 
             this.ItemDisplay.Sort();
 
-            if (this.DeleteCheckbox.Checked)
-            {
-                this.DeleteCheckbox.Checked = false;
-            }
+            var copyMessage = string.Format("Photos and videos copied successfully to {0}", this.destinationDirectories.First().DestinationDirectoryName);
 
             this.destinationDirectories.Clear();
-            this.DestinationDirectoriesPanel.Controls.Clear();
 
             this.StatusStripLabel.Text = "Photos and videos copied successfully.";
-            MessageBox.Show(this, "Photos and videos copied successfully.", "Copy Complete", MessageBoxButtons.OK);
+            MessageBox.Show(this, copyMessage, "Copy Complete", MessageBoxButtons.OK);
         }
 
         private void UpdateCopyItemsProgress(object sender, ProgressChangedEventArgs e)

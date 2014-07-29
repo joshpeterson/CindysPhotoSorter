@@ -1,6 +1,6 @@
 ﻿namespace PhotoSorter
 {
-    partial class FileNamePrefixForm
+    partial class CopyPhotosAndVideosForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,21 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileNamePrefixForm));
-            this.destinationDirectoryLabel = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CopyPhotosAndVideosForm));
             this.fileNamePrefixLabel = new System.Windows.Forms.Label();
             this.fileNamePrefixTextBox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.DeleteCheckbox = new System.Windows.Forms.CheckBox();
+            this.destinationDirectoryLabel = new System.Windows.Forms.Label();
+            this.destinatonDirectoryTextBox = new System.Windows.Forms.TextBox();
+            this.chooseDestinationDirectoryButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // destinationDirectoryLabel
-            // 
-            this.destinationDirectoryLabel.AutoSize = true;
-            this.destinationDirectoryLabel.Location = new System.Drawing.Point(13, 13);
-            this.destinationDirectoryLabel.Name = "destinationDirectoryLabel";
-            this.destinationDirectoryLabel.Size = new System.Drawing.Size(0, 13);
-            this.destinationDirectoryLabel.TabIndex = 0;
             // 
             // fileNamePrefixLabel
             // 
@@ -62,11 +57,12 @@
             // 
             // okButton
             // 
+            this.okButton.Enabled = false;
             this.okButton.Location = new System.Drawing.Point(328, 66);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 3;
-            this.okButton.Text = "OK";
+            this.okButton.Text = "Copy";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButtonOnClick);
             // 
@@ -81,23 +77,63 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButtonOnClick);
             // 
-            // FileNamePrefixForm
+            // DeleteCheckbox
             // 
-            this.AcceptButton = this.okButton;
+            this.DeleteCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.DeleteCheckbox.AutoSize = true;
+            this.DeleteCheckbox.Location = new System.Drawing.Point(16, 70);
+            this.DeleteCheckbox.Name = "DeleteCheckbox";
+            this.DeleteCheckbox.Size = new System.Drawing.Size(137, 17);
+            this.DeleteCheckbox.TabIndex = 8;
+            this.DeleteCheckbox.Text = "Remove files after copy";
+            this.DeleteCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // destinationDirectoryLabel
+            // 
+            this.destinationDirectoryLabel.AutoSize = true;
+            this.destinationDirectoryLabel.Location = new System.Drawing.Point(13, 9);
+            this.destinationDirectoryLabel.Name = "destinationDirectoryLabel";
+            this.destinationDirectoryLabel.Size = new System.Drawing.Size(108, 13);
+            this.destinationDirectoryLabel.TabIndex = 9;
+            this.destinationDirectoryLabel.Text = "Destination Directory:";
+            // 
+            // destinatonDirectoryTextBox
+            // 
+            this.destinatonDirectoryTextBox.Location = new System.Drawing.Point(124, 6);
+            this.destinatonDirectoryTextBox.Name = "destinatonDirectoryTextBox";
+            this.destinatonDirectoryTextBox.ReadOnly = true;
+            this.destinatonDirectoryTextBox.Size = new System.Drawing.Size(328, 20);
+            this.destinatonDirectoryTextBox.TabIndex = 10;
+            // 
+            // chooseDestinationDirectoryButton
+            // 
+            this.chooseDestinationDirectoryButton.Location = new System.Drawing.Point(458, 5);
+            this.chooseDestinationDirectoryButton.Name = "chooseDestinationDirectoryButton";
+            this.chooseDestinationDirectoryButton.Size = new System.Drawing.Size(25, 23);
+            this.chooseDestinationDirectoryButton.TabIndex = 11;
+            this.chooseDestinationDirectoryButton.Text = "...";
+            this.chooseDestinationDirectoryButton.UseVisualStyleBackColor = true;
+            this.chooseDestinationDirectoryButton.Click += new System.EventHandler(this.chooseDestinationDirectoryButton_Click);
+            // 
+            // CopyPhotosAndVideosForm
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(496, 101);
-            this.Controls.Add(this.cancelButton);
+            this.Controls.Add(this.chooseDestinationDirectoryButton);
+            this.Controls.Add(this.destinatonDirectoryTextBox);
+            this.Controls.Add(this.destinationDirectoryLabel);
+            this.Controls.Add(this.DeleteCheckbox);
             this.Controls.Add(this.okButton);
+            this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.fileNamePrefixTextBox);
             this.Controls.Add(this.fileNamePrefixLabel);
-            this.Controls.Add(this.destinationDirectoryLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "FileNamePrefixForm";
+            this.Name = "CopyPhotosAndVideosForm";
             this.ShowInTaskbar = false;
-            this.Text = "File Name Prefix";
+            this.Text = "Copy photos and videos";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -105,10 +141,13 @@
 
         #endregion
 
-        private System.Windows.Forms.Label destinationDirectoryLabel;
         private System.Windows.Forms.Label fileNamePrefixLabel;
         private System.Windows.Forms.TextBox fileNamePrefixTextBox;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.CheckBox DeleteCheckbox;
+        private System.Windows.Forms.Label destinationDirectoryLabel;
+        private System.Windows.Forms.TextBox destinatonDirectoryTextBox;
+        private System.Windows.Forms.Button chooseDestinationDirectoryButton;
     }
 }
