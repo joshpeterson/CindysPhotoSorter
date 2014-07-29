@@ -58,7 +58,7 @@ namespace PhotoSorter
             this.lastSelectedFindItemsPath = null;
             this.lastCopyItemsPath = null;
 
-            this.StatusStripLabel.Text = "Click \"Find photos and videos\".";
+            this.statusStripLabel.Text = "Click \"Find photos and videos\".";
         }
 
         #endregion
@@ -70,13 +70,9 @@ namespace PhotoSorter
             var folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog();
 
             if (string.IsNullOrEmpty(this.lastSelectedFindItemsPath))
-            {
                 folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
-            }
             else
-            {
                 folderBrowser.SelectedPath = this.lastSelectedFindItemsPath;
-            }
 
             DialogResult result = folderBrowser.ShowDialog();
 
@@ -86,11 +82,11 @@ namespace PhotoSorter
 
                 this.listViewImageList = new ImageList();
                 this.listViewItems.Clear();
-                this.ItemDisplay.Clear();
+                this.itemDisplay.Clear();
 
                 this.findItemsWorker.RunWorkerAsync(folderBrowser.SelectedPath);
 
-                this.StatusStripLabel.Text = string.Format("Finding photos and videos in {0}...", folderBrowser.SelectedPath);
+                this.statusStripLabel.Text = string.Format("Finding photos and videos in {0}...", folderBrowser.SelectedPath);
 
             }
         }
@@ -239,36 +235,34 @@ namespace PhotoSorter
 
         private void SetUpListView(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.ItemDisplay.LargeImageList = this.listViewImageList;
+            this.itemDisplay.LargeImageList = this.listViewImageList;
             foreach (ListViewItem item in this.listViewItems)
-            {
-                this.ItemDisplay.Items.Add(item);
-            }
+                this.itemDisplay.Items.Add(item);
 
-            if (this.ItemDisplay.Items.Count == 0)
+            if (this.itemDisplay.Items.Count == 0)
             {
-                this.StatusStripLabel.Text = "No photos or videos found";
+                this.statusStripLabel.Text = "No photos or videos found";
                 MessageBox.Show(this, "No photos or videos found!", "Find photos and videos", MessageBoxButtons.OK);
             }
-            else if (this.ItemDisplay.Items.Count == 1)
+            else if (this.itemDisplay.Items.Count == 1)
             {
-                this.StatusStripLabel.Text = string.Format("{0} item found.", this.ItemDisplay.Items.Count);
+                this.statusStripLabel.Text = string.Format("{0} item found.", this.itemDisplay.Items.Count);
             }
             else
             {
-                this.StatusStripLabel.Text = string.Format("{0} items found.  Select items to copy.", this.ItemDisplay.Items.Count);
+                this.statusStripLabel.Text = string.Format("{0} items found.  Select items to copy.", this.itemDisplay.Items.Count);
             }
         }
 
         private void UpdateFindItemsProgress(object sender, ProgressChangedEventArgs e)
         {
-            this.ProgressBar.Value = e.ProgressPercentage;
-            this.StatusStripLabel.Text = string.Format("Processed item {0}", Path.GetFullPath((string)e.UserState));
+            this.progressBar.Value = e.ProgressPercentage;
+            this.statusStripLabel.Text = string.Format("Processed item {0}", Path.GetFullPath((string)e.UserState));
         }
 
         private void SortItemDisplay(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.ItemDisplay.Sort();
+            this.itemDisplay.Sort();
         }
 
         #endregion
@@ -286,7 +280,7 @@ namespace PhotoSorter
                 CopyItems(fileNamePrefixForm.DeleteFilesAfterCopy);
             }
 
-            this.ItemDisplay.Select();
+            this.itemDisplay.Select();
         }
 
         #endregion
@@ -295,34 +289,34 @@ namespace PhotoSorter
 
         private void CopyItems(bool deleteFilesAfterCopy)
         {
-            if (this.ItemDisplay.SelectedItems.Count == 0)
+            if (this.itemDisplay.SelectedItems.Count == 0)
             {
-                this.StatusStripLabel.Text = "Please select at least one item to copy.";
+                this.statusStripLabel.Text = "Please select at least one item to copy.";
                 MessageBox.Show(this, "Please select at least one item to copy.", "Select an Item", MessageBoxButtons.OK);
                 return;
             }
 
             if (this.destinationDirectories.Count == 0)
             {
-                this.StatusStripLabel.Text = "Please add a destination directory.";
+                this.statusStripLabel.Text = "Please add a destination directory.";
                 MessageBox.Show(this, "Please add a destination directory.", "Select Directory", MessageBoxButtons.OK);
                 return;
             }
 
             if (string.IsNullOrEmpty(destinationDirectories[0].FileNamePrefix))
             {
-                this.StatusStripLabel.Text = "Please select a file name prefix for the destination directory.";
+                this.statusStripLabel.Text = "Please select a file name prefix for the destination directory.";
                 MessageBox.Show(this, "Please select a file name prefix for the destination directory.", "Select Prefix", MessageBoxButtons.OK);
                 return;
             }
 
-            this.ItemDisplay.Select();
+            this.itemDisplay.Select();
 
-            int numPhotos = this.ItemDisplay.SelectedItems.Count;
+            int numPhotos = this.itemDisplay.SelectedItems.Count;
             if (numPhotos > 0)
             {
                 List<string> itemFileNames = new List<string>();
-                foreach (ListViewItem item in this.ItemDisplay.SelectedItems)
+                foreach (ListViewItem item in this.itemDisplay.SelectedItems)
                 {
                     itemFileNames.Add(item.Tag.ToString());
                 }
@@ -334,7 +328,7 @@ namespace PhotoSorter
 
                 this.copyItemsWorker.RunWorkerAsync(copyInformation);
 
-                this.StatusStripLabel.Text = "Copying items...";
+                this.statusStripLabel.Text = "Copying items...";
             }
         }
 
@@ -387,11 +381,11 @@ namespace PhotoSorter
         {
             foreach (string fileName in this.itemsDeletedDuringCopy)
             {
-                foreach (ListViewItem item in this.ItemDisplay.Items)
+                foreach (ListViewItem item in this.itemDisplay.Items)
                 {
                     if ((string)item.Tag == fileName)
                     {
-                        this.ItemDisplay.Items.Remove(item);
+                        this.itemDisplay.Items.Remove(item);
                     }
                 }
             }
@@ -423,19 +417,19 @@ namespace PhotoSorter
         {
             RemoveDeletedItems();
 
-            this.ItemDisplay.Sort();
+            this.itemDisplay.Sort();
 
             var copyMessage = string.Format("Photos and videos copied successfully to {0}", this.destinationDirectories.First().DestinationDirectoryName);
 
             this.destinationDirectories.Clear();
 
-            this.StatusStripLabel.Text = "Photos and videos copied successfully.";
+            this.statusStripLabel.Text = "Photos and videos copied successfully.";
             MessageBox.Show(this, copyMessage, "Copy Complete", MessageBoxButtons.OK);
         }
 
         private void UpdateCopyItemsProgress(object sender, ProgressChangedEventArgs e)
         {
-            this.ProgressBar.Value = e.ProgressPercentage;
+            this.progressBar.Value = e.ProgressPercentage;
         }
 
         #endregion
@@ -444,7 +438,7 @@ namespace PhotoSorter
 
         private void ClearProgressBar(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.ProgressBar.Value = 0;
+            this.progressBar.Value = 0;
         }
 
         #endregion
@@ -453,19 +447,19 @@ namespace PhotoSorter
 
         private void OnSelectionedIndexChanged(object sender, EventArgs e)
         {
-            this.StatusStripLabel.Text = string.Format("{0} of {1} items selected.", this.ItemDisplay.SelectedItems.Count, this.ItemDisplay.Items.Count);
+            this.statusStripLabel.Text = string.Format("{0} of {1} items selected.", this.itemDisplay.SelectedItems.Count, this.itemDisplay.Items.Count);
         }
 
         private void DeleteCheckboxOnCheckChanged(object sender, EventArgs e)
         {
-            this.ItemDisplay.Select();
+            this.itemDisplay.Select();
         }
 
         private void OnItemDoubleClick(object sender, EventArgs e)
         {
-            if (this.ItemDisplay.SelectedItems.Count == 1)
+            if (this.itemDisplay.SelectedItems.Count == 1)
             {
-                string clickedItemFileName = this.ItemDisplay.SelectedItems[0].Tag.ToString();
+                string clickedItemFileName = this.itemDisplay.SelectedItems[0].Tag.ToString();
                 Process.Start(clickedItemFileName);
             }
         }

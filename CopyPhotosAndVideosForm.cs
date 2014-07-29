@@ -23,10 +23,10 @@ namespace PhotoSorter
             this.lastCopyItemsPath = lastCopyItemsPath;
         }
 
-        private void okButtonOnClick(object sender, EventArgs e)
+        private void copyButtonOnClick(object sender, EventArgs e)
         {
             this.FileNamePrefix = this.fileNamePrefixTextBox.Text;
-            this.DeleteFilesAfterCopy = this.DeleteCheckbox.Checked;
+            this.DeleteFilesAfterCopy = this.deleteCheckbox.Checked;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -42,13 +42,9 @@ namespace PhotoSorter
             var folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog();
 
             if (string.IsNullOrEmpty(this.lastCopyItemsPath))
-            {
                 folderBrowser.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            }
             else
-            {
                 folderBrowser.SelectedPath = this.lastCopyItemsPath;
-            }
 
             DialogResult folderResult = folderBrowser.ShowDialog();
 
@@ -56,7 +52,7 @@ namespace PhotoSorter
             {
                 this.DestinationDirectory = folderBrowser.SelectedPath;
                 this.destinatonDirectoryTextBox.Text = this.DestinationDirectory;
-                this.okButton.Enabled = true;
+                this.copyButton.Enabled = true;
             }
         }
     }

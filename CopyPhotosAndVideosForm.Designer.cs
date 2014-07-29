@@ -31,9 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CopyPhotosAndVideosForm));
             this.fileNamePrefixLabel = new System.Windows.Forms.Label();
             this.fileNamePrefixTextBox = new System.Windows.Forms.TextBox();
-            this.okButton = new System.Windows.Forms.Button();
+            this.copyButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.DeleteCheckbox = new System.Windows.Forms.CheckBox();
+            this.deleteCheckbox = new System.Windows.Forms.CheckBox();
             this.destinationDirectoryLabel = new System.Windows.Forms.Label();
             this.destinatonDirectoryTextBox = new System.Windows.Forms.TextBox();
             this.chooseDestinationDirectoryButton = new System.Windows.Forms.Button();
@@ -55,16 +55,16 @@
             this.fileNamePrefixTextBox.Size = new System.Drawing.Size(386, 20);
             this.fileNamePrefixTextBox.TabIndex = 2;
             // 
-            // okButton
+            // copyButton
             // 
-            this.okButton.Enabled = false;
-            this.okButton.Location = new System.Drawing.Point(328, 66);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 23);
-            this.okButton.TabIndex = 3;
-            this.okButton.Text = "Copy";
-            this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButtonOnClick);
+            this.copyButton.Enabled = false;
+            this.copyButton.Location = new System.Drawing.Point(328, 66);
+            this.copyButton.Name = "okButton";
+            this.copyButton.Size = new System.Drawing.Size(75, 23);
+            this.copyButton.TabIndex = 3;
+            this.copyButton.Text = "Copy";
+            this.copyButton.UseVisualStyleBackColor = true;
+            this.copyButton.Click += new System.EventHandler(this.copyButtonOnClick);
             // 
             // cancelButton
             // 
@@ -77,16 +77,16 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButtonOnClick);
             // 
-            // DeleteCheckbox
+            // deleteCheckbox
             // 
-            this.DeleteCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DeleteCheckbox.AutoSize = true;
-            this.DeleteCheckbox.Location = new System.Drawing.Point(16, 70);
-            this.DeleteCheckbox.Name = "DeleteCheckbox";
-            this.DeleteCheckbox.Size = new System.Drawing.Size(137, 17);
-            this.DeleteCheckbox.TabIndex = 8;
-            this.DeleteCheckbox.Text = "Remove files after copy";
-            this.DeleteCheckbox.UseVisualStyleBackColor = true;
+            this.deleteCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.deleteCheckbox.AutoSize = true;
+            this.deleteCheckbox.Location = new System.Drawing.Point(16, 70);
+            this.deleteCheckbox.Name = "deleteCheckbox";
+            this.deleteCheckbox.Size = new System.Drawing.Size(137, 17);
+            this.deleteCheckbox.TabIndex = 8;
+            this.deleteCheckbox.Text = "Remove files after copy";
+            this.deleteCheckbox.UseVisualStyleBackColor = true;
             // 
             // destinationDirectoryLabel
             // 
@@ -124,8 +124,8 @@
             this.Controls.Add(this.chooseDestinationDirectoryButton);
             this.Controls.Add(this.destinatonDirectoryTextBox);
             this.Controls.Add(this.destinationDirectoryLabel);
-            this.Controls.Add(this.DeleteCheckbox);
-            this.Controls.Add(this.okButton);
+            this.Controls.Add(this.deleteCheckbox);
+            this.Controls.Add(this.copyButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.fileNamePrefixTextBox);
             this.Controls.Add(this.fileNamePrefixLabel);
@@ -143,9 +143,9 @@
 
         private System.Windows.Forms.Label fileNamePrefixLabel;
         private System.Windows.Forms.TextBox fileNamePrefixTextBox;
-        private System.Windows.Forms.Button okButton;
+        private System.Windows.Forms.Button copyButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.CheckBox DeleteCheckbox;
+        private System.Windows.Forms.CheckBox deleteCheckbox;
         private System.Windows.Forms.Label destinationDirectoryLabel;
         private System.Windows.Forms.TextBox destinatonDirectoryTextBox;
         private System.Windows.Forms.Button chooseDestinationDirectoryButton;
