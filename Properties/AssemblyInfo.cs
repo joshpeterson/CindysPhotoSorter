@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PhotoSorter")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Cindy's Photo Sorter")]
+[assembly: AssemblyDescription("An application for photo and video sorting and copying")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PhotoSorter")]
-[assembly: AssemblyCopyright("Copyright ©  2009")]
+[assembly: AssemblyCompany("Josh Peterson")]
+[assembly: AssemblyProduct("Cindy's Photo Sorter")]
+[assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System;
 
-namespace PhotoSorter
+namespace CindysPhotoSorter
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct SHFILEINFO

@@ -1,4 +1,4 @@
-﻿namespace PhotoSorter
+﻿namespace CindysPhotoSorter
 {
     partial class PhotoSorterForm
     {

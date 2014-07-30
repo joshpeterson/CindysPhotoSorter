@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoSorter", "PhotoSorter.csproj", "{0754904E-B131-4849-B314-737EDD158CE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CindysPhotoSorter", "CindysPhotoSorter.csproj", "{0754904E-B131-4849-B314-737EDD158CE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

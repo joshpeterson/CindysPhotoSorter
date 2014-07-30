@@ -12,7 +12,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-namespace PhotoSorter
+namespace CindysPhotoSorter
 {
     public partial class PhotoSorterForm : Form
     {

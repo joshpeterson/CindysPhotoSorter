@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System;
 
-namespace PhotoSorter
+namespace CindysPhotoSorter
 {
     class DestinationDirectoryInformation
     {
