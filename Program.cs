@@ -17,7 +17,7 @@ namespace CindysPhotoSorter
         {
             if (args.Name.Contains("Ookii"))
             {
-                string resourceName = string.Format("CindysPhotoSorter.{0}.dll", new AssemblyName(args.Name).Name);
+                string resourceName = string.Format("CindysPhotoSorter.Ookii.Dialogs.{0}.dll", new AssemblyName(args.Name).Name);
 
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                 {

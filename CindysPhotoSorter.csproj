@@ -115,8 +115,7 @@
     <Compile Include="SHGetFileInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ookii.Dialogs\Ookii.Dialogs.dll" />
-    <EmbeddedResource Include="Ookii.Dialogs.dll" />
+    <EmbeddedResource Include="Ookii.Dialogs\Ookii.Dialogs.dll" />
     <Content Include="sunset.ico" />
   </ItemGroup>
   <ItemGroup>
